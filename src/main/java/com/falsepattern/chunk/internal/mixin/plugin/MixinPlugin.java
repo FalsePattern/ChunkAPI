@@ -21,27 +21,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.falsepattern.chunk.mixin.plugin;
+package com.falsepattern.chunk.internal.mixin.plugin;
 
+import com.falsepattern.chunk.internal.Tags;
 import com.falsepattern.lib.mixin.IMixin;
+import com.falsepattern.lib.mixin.IMixinPlugin;
 import com.falsepattern.lib.mixin.ITargetedMod;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-import java.util.function.Predicate;
+public class MixinPlugin implements IMixinPlugin {
+    @Getter
+    private final Logger logger = IMixinPlugin.createLogger(Tags.MODNAME);
 
-@RequiredArgsConstructor
-public enum Mixin implements IMixin {
-    // @formatter:off
-    ;
-    // @formatter:on
+    @Override
+    public ITargetedMod[] getTargetedModEnumValues() {
+        return TargetedMod.values();
+    }
 
-    @Getter
-    private final Side side;
-    @Getter
-    private final Predicate<List<ITargetedMod>> filter;
-    @Getter
-    private final String mixin;
+    @Override
+    public IMixin[] getMixinEnumValues() {
+        return Mixin.values();
+    }
 }
-

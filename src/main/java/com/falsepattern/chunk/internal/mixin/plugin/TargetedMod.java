@@ -21,7 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.falsepattern.chunk.mixin.plugin;
+package com.falsepattern.chunk.internal.mixin.plugin;
 
 import com.falsepattern.lib.mixin.ITargetedMod;
 import lombok.Getter;

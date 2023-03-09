@@ -1,4 +1,4 @@
-package com.falsepattern.chunk;
+package com.falsepattern.chunk.internal;
 
 public class Tags {
     public static final String MODID = "GRADLETOKEN_MODID";
