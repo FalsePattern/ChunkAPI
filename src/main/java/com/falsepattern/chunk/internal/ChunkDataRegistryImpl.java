@@ -91,8 +91,8 @@ public class ChunkDataRegistryImpl {
                 continue;
             }
             int start = buf.position();
-            val section = ByteBuffer.wrap(data, start, length);
-            manager.readFromBuffer(chunk, ebsMask, forceUpdate, section);
+            val slice = createSlice(buf, start, length);
+            manager.readFromBuffer(chunk, ebsMask, forceUpdate, slice);
             buf.position(start + length);
         }
     }
@@ -106,13 +106,23 @@ public class ChunkDataRegistryImpl {
             val manager = pair.getValue();
             writeString(buf, pair.getKey());
             int start = buf.position() + 4;
-            val section = ByteBuffer.wrap(data, start, manager.maxPacketSize());
-            manager.writeToBuffer(chunk, ebsMask, forceUpdate, section);
-            int length = section.position();
-            buf.position(start - 4);
+            val slice = createSlice(buf, start, manager.maxPacketSize());
+            manager.writeToBuffer(chunk, ebsMask, forceUpdate, slice);
+            int length = slice.position();
             buf.putInt(length);
             buf.position(start + length);
         }
         return buf.position();
+    }
+
+    private static ByteBuffer createSlice(ByteBuffer buffer, int start, int length) {
+        int oldLimit = buffer.limit();
+        int oldPosition = buffer.position();
+        buffer.position(start);
+        buffer.limit(start + length);
+        ByteBuffer slice = buffer.slice();
+        buffer.limit(oldLimit);
+        buffer.position(oldPosition);
+        return slice;
     }
 }

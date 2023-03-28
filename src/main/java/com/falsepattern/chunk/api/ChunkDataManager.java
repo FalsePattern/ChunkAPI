@@ -8,9 +8,10 @@ import java.nio.ByteBuffer;
 
 /**
  * Singleton instances that can manage custom in chunks.
- * For performance reasons, you should store any data in the chunk itself using a mixin. The type T is the type
+ * <p>
+ * Implementations should be stateless and thread-safe.
+ * @implNote For performance reasons, you should store any data in the chunk itself using a mixin. The type T is the type
  * of the interface that you are mixing into the chunk.
- * Note: All the methods should be thread-safe and stateless unless otherwise specified.
  */
 public interface ChunkDataManager<T> {
 

@@ -21,7 +21,7 @@ public class ChunkDataRegistry {
      * Disables a ChunkDataManager. Only do this during the preInit phase.
      * @param id The id of the manager to disable.
      */
-    public static void disableDataManager(String id) {
-        ChunkDataRegistryImpl.disableDataManager(id);
+    public static void disableDataManager(String domain, String id) {
+        ChunkDataRegistryImpl.disableDataManager(domain, id);
     }
 }
