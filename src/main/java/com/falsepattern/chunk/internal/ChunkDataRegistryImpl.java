@@ -5,26 +5,27 @@ import com.falsepattern.chunk.api.exception.ManagerRegistrationException;
 import lombok.val;
 import lombok.var;
 
-import java.util.ArrayList;
+import net.minecraft.world.chunk.Chunk;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ChunkDataRegistryImpl {
+    @SuppressWarnings("rawtypes")
     private static final Map<String, ChunkDataManager> managers = new HashMap<>();
     private static final Set<String> disabledManagers = new HashSet<>();
-    public static void registerDataManager(ChunkDataManager manager) throws ManagerRegistrationException {
+    private static int maxPacketSize = 0;
+    public static void registerDataManager(ChunkDataManager<?> manager) throws ManagerRegistrationException {
         if (!ChunkAPI.isRegistrationStage()) {
             throw new ManagerRegistrationException("ChunkDataManager registration is not allowed at this time! " +
-                                                   "Please register your ChunkDataManager in the init phase of your mod.");
+                                                   "Please register your ChunkDataManager in the preInit phase of your mod.");
         }
-        var id = manager.id();
-        if (id == null) {
-            throw new ManagerRegistrationException("ChunkDataManager " + manager + " has a null id!");
-        }
-        id = id.intern();
+        var id = manager.domain() + ":" + manager.id();
         if (managers.containsKey(id)) {
             throw new ManagerRegistrationException("ChunkDataManager " + manager + " has a duplicate id!");
         }
@@ -35,22 +36,83 @@ public class ChunkDataRegistryImpl {
         }
 
         managers.put(id, manager);
+        maxPacketSize += 4 + id.getBytes(StandardCharsets.UTF_8).length;
+        maxPacketSize += manager.maxPacketSize();
     }
 
-    public static void disableDataManager(String id) {
-        if (!ChunkAPI.isRegistrationStage()) {
+    public static void disableDataManager(String domain, String id) {
+        if (!ChunkAPI.isDisableStage()) {
             throw new ManagerRegistrationException("ChunkDataManager disabling is not allowed at this time! " +
-                                                   "Please disable any ChunkDataManagers in the init phase of your mod.");
+                                                   "Please disable any ChunkDataManagers in the preInit/init phases.");
         }
-        if (id == null) {
-            throw new ManagerRegistrationException("ChunkDataManager id cannot be null!");
-        }
+        val fusedId = domain + ":" + id;
         id = id.intern();
         Common.LOG.warn("Disabling ChunkDataManager " + id + ". See the stacktrace for the source of this event.", new Throwable());
         //Remove the manager from the list of managers, if it exists
-        managers.remove(id);
+        val removed = managers.remove(id);
+        if (removed != null) {
+            maxPacketSize -= 4 + id.getBytes(StandardCharsets.UTF_8).length;
+            maxPacketSize -= removed.maxPacketSize();
+        }
 
         //Add the manager to the list of disabled managers, in case it gets registered after this disable call.
         disabledManagers.add(id);
+    }
+
+    public static int maxPacketSize() {
+        return maxPacketSize;
+    }
+
+    private static void writeString(ByteBuffer buffer, String string) {
+        val bytes = string.getBytes();
+        buffer.putInt(bytes.length);
+        buffer.put(bytes);
+    }
+
+    private static String readString(ByteBuffer buffer) {
+        val length = buffer.getInt();
+        val bytes = new byte[length];
+        buffer.get(bytes);
+        return new String(bytes);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void readFromBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, byte[] data) {
+        val buf = ByteBuffer.wrap(data);
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+        int count = buf.getInt();
+        for (int i = 0; i < count; i++) {
+            val id = readString(buf);
+            val length = buf.getInt();
+            val manager = managers.get(id);
+            if (manager == null) {
+                Common.LOG.error("Received data for unknown ChunkDataManager " + id + ". Skipping.");
+                buf.position(buf.position() + length);
+                continue;
+            }
+            int start = buf.position();
+            val section = ByteBuffer.wrap(data, start, length);
+            manager.readFromBuffer(chunk, ebsMask, forceUpdate, section);
+            buf.position(start + length);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static int writeToBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, byte[] data) {
+        val buf = ByteBuffer.wrap(data);
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+        buf.putInt(managers.size());
+        for (val pair: managers.entrySet()) {
+            val manager = pair.getValue();
+            writeString(buf, pair.getKey());
+            int start = buf.position() + 4;
+            val section = ByteBuffer.wrap(data, start, manager.maxPacketSize());
+            manager.writeToBuffer(chunk, ebsMask, forceUpdate, section);
+            int length = section.position();
+            buf.position(start - 4);
+            buf.putInt(length);
+            buf.position(start + length);
+        }
+        return buf.position();
     }
 }

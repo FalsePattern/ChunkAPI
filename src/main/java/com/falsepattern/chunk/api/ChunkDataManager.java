@@ -1,55 +1,75 @@
 package com.falsepattern.chunk.api;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.chunk.Chunk;
+
+import java.nio.ByteBuffer;
 
 /**
  * Singleton instances that can manage custom in chunks.
+ * For performance reasons, you should store any data in the chunk itself using a mixin. The type T is the type
+ * of the interface that you are mixing into the chunk.
  * Note: All the methods should be thread-safe and stateless unless otherwise specified.
  */
-public interface ChunkDataManager {
+public interface ChunkDataManager<T> {
+
     /**
-     * The unique identifier of your data. The common convention is <code>modid:dataid</code>.
-     * @return The unique identifier of your data. Should be unique across all mods.
-     * @apiNote Ideally, this should be an interned string for maximum performance. (see {@link String#intern()}).
-     * @implNote This is used to identify your data in packets and NBT tags.
+     * @return The domain of this manager. Usually the modid of the mod that owns this manager.
+     */
+    String domain();
+
+    /**
+     * @return The id of this manager. Usually the name of the manager. Unique per domain.
      */
     String id();
+
     /**
-     * Initializes your data in a chunk. This is called when the chunk is first created.
+     * Used for sorting the managers. Managers with a lower order index are processed first.
+     * If unsure, return 0, and let the implementation decide.
+     */
+    default int orderIndex() {
+        return 0;
+    }
+
+    /**
+     * Initializes your data in a chunk. This is called at the end of the chunk constructor. One less mixin per manager!
      * @param chunk The chunk to initialize.
      */
-    void init(ModdedChunk chunk);
+    void init(T chunk);
+
     /**
-     * The amount of bytes your data will take up in a packet.
-     * @param chunk The chunk that the data is in.
-     * @return The amount of bytes your data will take up in a packet. -1 if the data is not present.
+     * @implNote This is used to determine the size of the packet compression/decompression buffer.
+     * @return The maximum amount of bytes your data can take up in a packet.
      */
-    int getPacketSize(ModdedChunk chunk);
+    int maxPacketSize();
+
     /**
-     * Serializes your data into a packet. Not called if {@link #getPacketSize(ModdedChunk)} returns -1.
-     * @param chunk The chunk that the data is in.
-     * @param buffer The packet buffer to write to.
+     * Serializes your data into a packet.
+     *
+     * @param chunk The chunk to serialize.
      */
-    void writeToPacket(ModdedChunk chunk, PacketBuffer buffer);
+    void writeToBuffer(T chunk, int ebsMask, boolean forceUpdate, ByteBuffer data);
+
     /**
-     * Deserializes your data from a packet. Not called if {@link #getPacketSize(ModdedChunk)} returned -1 on the other end.
-     * @param chunk The chunk that the data is in.
+     * Deserializes your data from a packet.
+     * Mutates this object.
+     *
+     * @param chunk  The chunk to deserialize.
      * @param buffer The packet buffer to read from.
-     * @return The deserialized data.
      */
-    void readFromPacket(ModdedChunk chunk, PacketBuffer buffer);
+    void readFromBuffer(T chunk, int ebsMask, boolean forceUpdate, ByteBuffer buffer);
+
     /**
      * Serializes your data into an NBT tag. This is used when saving the chunk to disk.
-     * @param chunk The chunk that the data is in.
      * @param tag The tag to write to.
      */
-    void writeToNBT(ModdedChunk chunk, NBTTagCompound tag);
+    void writeToNBT(T chunk, @NotNull NBTTagCompound tag);
+
     /**
      * Deserializes your data from an NBT tag. This is used when loading the chunk from disk.
-     * @param chunk The chunk that the data gets loaded into.
+     * Mutates this object.
      * @param tag The tag to read from.
      */
-    void readFromNBT(ModdedChunk chunk, NBTTagCompound tag);
+    void readFromNBT(T chunk, @NotNull NBTTagCompound tag);
 }
