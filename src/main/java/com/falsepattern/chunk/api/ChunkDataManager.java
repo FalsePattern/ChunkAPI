@@ -26,20 +26,6 @@ public interface ChunkDataManager<T> {
     String id();
 
     /**
-     * Used for sorting the managers. Managers with a lower order index are processed first.
-     * If unsure, return 0, and let the implementation decide.
-     */
-    default int orderIndex() {
-        return 0;
-    }
-
-    /**
-     * Initializes your data in a chunk. This is called at the end of the chunk constructor. One less mixin per manager!
-     * @param chunk The chunk to initialize.
-     */
-    void init(T chunk);
-
-    /**
      * @implNote This is used to determine the size of the packet compression/decompression buffer.
      * @return The maximum amount of bytes your data can take up in a packet.
      */

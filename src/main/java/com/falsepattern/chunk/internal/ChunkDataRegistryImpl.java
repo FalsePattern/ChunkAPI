@@ -1,7 +1,6 @@
 package com.falsepattern.chunk.internal;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
-import com.falsepattern.chunk.api.exception.ManagerRegistrationException;
 import lombok.val;
 import lombok.var;
 
@@ -20,14 +19,14 @@ public class ChunkDataRegistryImpl {
     private static final Map<String, ChunkDataManager> managers = new HashMap<>();
     private static final Set<String> disabledManagers = new HashSet<>();
     private static int maxPacketSize = 0;
-    public static void registerDataManager(ChunkDataManager<?> manager) throws ManagerRegistrationException {
+    public static void registerDataManager(ChunkDataManager<?> manager) throws IllegalStateException, IllegalArgumentException {
         if (!ChunkAPI.isRegistrationStage()) {
-            throw new ManagerRegistrationException("ChunkDataManager registration is not allowed at this time! " +
+            throw new IllegalStateException("ChunkDataManager registration is not allowed at this time! " +
                                                    "Please register your ChunkDataManager in the preInit phase of your mod.");
         }
         var id = manager.domain() + ":" + manager.id();
         if (managers.containsKey(id)) {
-            throw new ManagerRegistrationException("ChunkDataManager " + manager + " has a duplicate id!");
+            throw new IllegalArgumentException("ChunkDataManager " + manager + " has a duplicate id!");
         }
 
         // If the manager was disabled, do not add it to the list of managers.
@@ -42,11 +41,10 @@ public class ChunkDataRegistryImpl {
 
     public static void disableDataManager(String domain, String id) {
         if (!ChunkAPI.isDisableStage()) {
-            throw new ManagerRegistrationException("ChunkDataManager disabling is not allowed at this time! " +
-                                                   "Please disable any ChunkDataManagers in the preInit/init phases.");
+            throw new IllegalStateException("ChunkDataManager disabling is not allowed at this time! " +
+                                            "Please disable any ChunkDataManagers in the preInit/init phases.");
         }
-        val fusedId = domain + ":" + id;
-        id = id.intern();
+        id = domain + ":" + id;
         Common.LOG.warn("Disabling ChunkDataManager " + id + ". See the stacktrace for the source of this event.", new Throwable());
         //Remove the manager from the list of managers, if it exists
         val removed = managers.remove(id);

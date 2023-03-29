@@ -1,7 +1,6 @@
 package com.falsepattern.chunk.api;
 
 import com.falsepattern.chunk.internal.ChunkDataRegistryImpl;
-import com.falsepattern.chunk.api.exception.ManagerRegistrationException;
 
 /**
  * This class is used to register ChunkDataManagers.
@@ -11,17 +10,19 @@ public class ChunkDataRegistry {
     /**
      * Registers a ChunkDataManager. Only do this during the preInit phase.
      * @param manager The manager to register.
-     * @throws ManagerRegistrationException If the manager is already registered.
+     * @throws IllegalStateException If the registration stage is over.
+     * @throws IllegalArgumentException If the manager has a duplicate id.
      */
-    public static void registerDataManager(ChunkDataManager<?> manager) throws ManagerRegistrationException {
+    public static void registerDataManager(ChunkDataManager<?> manager) throws IllegalStateException, IllegalArgumentException {
         ChunkDataRegistryImpl.registerDataManager(manager);
     }
 
     /**
      * Disables a ChunkDataManager. Only do this during the preInit phase.
      * @param id The id of the manager to disable.
+     * @throws IllegalStateException If the disable stage is over.
      */
-    public static void disableDataManager(String domain, String id) {
+    public static void disableDataManager(String domain, String id) throws IllegalStateException {
         ChunkDataRegistryImpl.disableDataManager(domain, id);
     }
 }
