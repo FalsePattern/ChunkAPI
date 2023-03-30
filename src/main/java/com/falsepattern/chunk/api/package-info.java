@@ -12,5 +12,9 @@
 
 /**
  * This package contains the classes that you will use to interact with the ChunkAPI library.
+ *
+ * @since 0.1.0
+ * @author FalsePattern
+ * @version 0.1.0
  */
 package com.falsepattern.chunk.api;
