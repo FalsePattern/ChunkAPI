@@ -23,6 +23,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,13 +52,11 @@ public abstract class ChunkMixin {
     @Shadow
     public abstract int getBlockMetadata(int p_76628_1_, int p_76628_2_, int p_76628_3_);
 
-    @Shadow
-    public abstract ExtendedBlockStorage[] getBlockStorageArray();
-
     /**
      * @author FalsePattern
      * @reason Replace functionality
      */
+    @SideOnly(Side.CLIENT)
     @Overwrite
     public void fillChunk(byte[] data, int ebsMask, int ebsMSBMask, boolean forceUpdate) {
         for (Object o : chunkTileEntityMap.values()) {

@@ -104,7 +104,7 @@ public abstract class S26PacketMapChunkBulkMixin {
      * @reason Replace functionality
      */
     @Overwrite
-    public void writePacketData(PacketBuffer data) throws IOException {
+    public void writePacketData(PacketBuffer data) {
         if (deflatedData == null) {
             deflateGate.acquireUninterruptibly();
             if (deflatedData == null) {
