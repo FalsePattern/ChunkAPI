@@ -20,7 +20,8 @@ import net.minecraft.world.chunk.Chunk;
 
 import java.nio.ByteBuffer;
 
-public class BiomeManager extends VanillaManager implements ChunkDataManager.PacketDataManager, ChunkDataManager.ChunkNBTDataManager {
+public class BiomeManager extends VanillaManager
+        implements ChunkDataManager.PacketDataManager, ChunkDataManager.ChunkNBTDataManager {
     public static final int BYTES_PER_CHUNK = 256;
 
     @Override

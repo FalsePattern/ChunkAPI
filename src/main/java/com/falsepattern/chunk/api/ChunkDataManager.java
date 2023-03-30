@@ -46,8 +46,9 @@ public interface ChunkDataManager {
      */
     interface PacketDataManager extends ChunkDataManager {
         /**
-         * @implNote This is used to determine the size of the packet compression/decompression buffer.
          * @return The maximum amount of bytes your data can take up in a packet.
+         *
+         * @implNote This is used to determine the size of the packet compression/decompression buffer.
          */
         @Contract(pure = true)
         int maxPacketSize();
@@ -118,6 +119,7 @@ public interface ChunkDataManager {
         default boolean sectionPrivilegedAccess() {
             return false;
         }
+
         /**
          * Serializes your data into an NBT tag. This is used when saving the chunk to disk.
          */

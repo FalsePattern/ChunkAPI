@@ -37,12 +37,13 @@ public abstract class AnvilChunkLoaderMixin {
     /**
      * Writes the Chunk passed as an argument to the NBTTagCompound also passed, using the World argument to retrieve
      * the Chunk's last update time.
+     *
      * @author FalsePattern
      * @reason Replace functionality
      */
     @Overwrite
     private void writeChunkToNBT(Chunk chunk, World world, NBTTagCompound nbt) {
-        nbt.setByte("V", (byte)1);
+        nbt.setByte("V", (byte) 1);
         nbt.setInteger("xPos", chunk.xPosition);
         nbt.setInteger("zPos", chunk.zPosition);
         System.out.println("Saving chunk " + chunk.xPosition + ", " + chunk.zPosition);
@@ -59,6 +60,7 @@ public abstract class AnvilChunkLoaderMixin {
     /**
      * Reads the data stored in the given NBTTagCompound and creates a Chunk with that data in the given World.
      * Returns the created Chunk.
+     *
      * @author FalsePattern
      * @reason Replace functionality
      */
@@ -66,7 +68,7 @@ public abstract class AnvilChunkLoaderMixin {
     private Chunk readChunkFromNBT(World world, NBTTagCompound nbt) {
         int x = nbt.getInteger("xPos");
         int z = nbt.getInteger("zPos");
-        System.out.println("Loading chunk " + x + ", " + z );
+        System.out.println("Loading chunk " + x + ", " + z);
         Chunk chunk = new Chunk(world, x, z);
         chunk.heightMap = nbt.getIntArray("HeightMap");
         chunk.isTerrainPopulated = nbt.getBoolean("TerrainPopulated");
@@ -110,7 +112,7 @@ public abstract class AnvilChunkLoaderMixin {
         NBTTagList sections = new NBTTagList();
         NBTTagCompound section;
 
-        for (ExtendedBlockStorage ebs: ebsList) {
+        for (ExtendedBlockStorage ebs : ebsList) {
             if (ebs != null) {
                 section = new NBTTagCompound();
                 section.setByte("Y", (byte) (ebs.getYLocation() >> 4 & 255));
@@ -127,7 +129,7 @@ public abstract class AnvilChunkLoaderMixin {
         NBTTagList entities = new NBTTagList();
 
         for (int i = 0; i < chunk.entityLists.length; ++i) {
-            for (Object o: chunk.entityLists[i]) {
+            for (Object o : chunk.entityLists[i]) {
                 Entity entity = (Entity) o;
                 val entityNBT = new NBTTagCompound();
 
@@ -147,7 +149,7 @@ public abstract class AnvilChunkLoaderMixin {
         nbt.setTag("Entities", entities);
         NBTTagList tileEntities = new NBTTagList();
 
-        for (Object o: chunk.chunkTileEntityMap.values()) {
+        for (Object o : chunk.chunkTileEntityMap.values()) {
             TileEntity tileentity = (TileEntity) o;
             val tileEntityNBT = new NBTTagCompound();
             try {

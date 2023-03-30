@@ -29,23 +29,28 @@ import java.util.Map;
 
 @Mixin(Chunk.class)
 public abstract class ChunkMixin {
-    @Shadow public Map<?, ?> chunkTileEntityMap;
+    @Shadow
+    public Map<?, ?> chunkTileEntityMap;
+    @Shadow
+    public boolean isLightPopulated;
+    @Shadow
+    public boolean isTerrainPopulated;
+    @Shadow
+    public World worldObj;
+    @Shadow
+    private ExtendedBlockStorage[] storageArrays;
 
-    @Shadow private ExtendedBlockStorage[] storageArrays;
+    @Shadow
+    public abstract void generateHeightMap();
 
-    @Shadow public boolean isLightPopulated;
+    @Shadow
+    public abstract Block getBlock(int p_150810_1_, int p_150810_2_, int p_150810_3_);
 
-    @Shadow public boolean isTerrainPopulated;
+    @Shadow
+    public abstract int getBlockMetadata(int p_76628_1_, int p_76628_2_, int p_76628_3_);
 
-    @Shadow public abstract void generateHeightMap();
-
-    @Shadow public abstract Block getBlock(int p_150810_1_, int p_150810_2_, int p_150810_3_);
-
-    @Shadow public abstract int getBlockMetadata(int p_76628_1_, int p_76628_2_, int p_76628_3_);
-
-    @Shadow public World worldObj;
-
-    @Shadow public abstract ExtendedBlockStorage[] getBlockStorageArray();
+    @Shadow
+    public abstract ExtendedBlockStorage[] getBlockStorageArray();
 
     /**
      * @author FalsePattern
@@ -72,7 +77,7 @@ public abstract class ChunkMixin {
             }
         }
 
-        ChunkDataRegistryImpl.readFromBuffer((Chunk)(Object)this, ebsMask, forceUpdate, data);
+        ChunkDataRegistryImpl.readFromBuffer((Chunk) (Object) this, ebsMask, forceUpdate, data);
 
         for (int i = 0; i < storageArrays.length; ++i) {
             if ((storageArrays[i] != null) && ((ebsMask & (1 << i)) != 0)) {

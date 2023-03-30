@@ -28,19 +28,27 @@ import java.util.zip.Inflater;
 
 @Mixin(S26PacketMapChunkBulk.class)
 public abstract class S26PacketMapChunkBulkMixin {
-    @Shadow(aliases = "field_149263_e") private byte[] deflatedData;
+    @Shadow(aliases = "field_149268_i")
+    private static byte[] inflaterBuffer;
+    @Shadow(aliases = "field_149263_e")
+    private byte[] deflatedData;
+    @Shadow
+    private Semaphore deflateGate;
+    @Shadow(aliases = "field_149266_a")
+    private int[] xPositions;
+    @Shadow(aliases = "field_149264_b")
+    private int[] zPositions;
+    @Shadow(aliases = "field_149265_c")
+    private int[] ebsMasks;
+    @Shadow(aliases = "field_149261_g")
+    private int deflatedSize;
+    @Shadow(aliases = "field_149267_h")
+    private boolean skylight;
+    @Shadow(aliases = "field_149260_f")
+    private byte[][] datas;
 
-    @Shadow private Semaphore deflateGate;
-
-    @Shadow protected abstract void deflate();
-
-    @Shadow(aliases = "field_149266_a") private int[] xPositions;
-    @Shadow(aliases = "field_149264_b") private int[] zPositions;
-    @Shadow(aliases = "field_149265_c") private int[] ebsMasks;
-    @Shadow(aliases = "field_149261_g") private int deflatedSize;
-    @Shadow(aliases = "field_149267_h") private boolean skylight;
-    @Shadow(aliases = "field_149260_f") private byte[][] datas;
-    @Shadow(aliases = "field_149268_i") private static byte[] inflaterBuffer;
+    @Shadow
+    protected abstract void deflate();
 
     /**
      * @author FalsePattern
@@ -106,7 +114,7 @@ public abstract class S26PacketMapChunkBulkMixin {
         }
 
         data.writeShort(xPositions.length);
-        for (byte[] bytes: datas) {
+        for (byte[] bytes : datas) {
             data.writeInt(bytes.length);
         }
         data.writeInt(deflatedSize);
@@ -116,7 +124,7 @@ public abstract class S26PacketMapChunkBulkMixin {
         for (int i = 0; i < xPositions.length; ++i) {
             data.writeInt(xPositions[i]);
             data.writeInt(zPositions[i]);
-            data.writeShort((short)(ebsMasks[i] & 65535));
+            data.writeShort((short) (ebsMasks[i] & 65535));
         }
     }
 }

@@ -25,7 +25,8 @@ import java.nio.ByteBuffer;
 import static com.falsepattern.chunk.internal.Common.BLOCKS_PER_EBS;
 import static com.falsepattern.chunk.internal.Common.EBS_PER_CHUNK;
 
-public class BlockIDManager extends VanillaManager implements ChunkDataManager.PacketDataManager, ChunkDataManager.SectionNBTDataManager {
+public class BlockIDManager extends VanillaManager
+        implements ChunkDataManager.PacketDataManager, ChunkDataManager.SectionNBTDataManager {
     private static final int LSB_BYTES_PER_EBS = BLOCKS_PER_EBS;
     private static final int MSB_BYTES_PER_EBS = BLOCKS_PER_EBS / 2;
     private static final int HEADER_SIZE = 2;

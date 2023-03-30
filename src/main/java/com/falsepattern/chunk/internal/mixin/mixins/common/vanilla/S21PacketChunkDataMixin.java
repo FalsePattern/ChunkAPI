@@ -33,18 +33,24 @@ import java.util.zip.Inflater;
 @Mixin(S21PacketChunkData.class)
 public abstract class S21PacketChunkDataMixin {
 
-    @Shadow private Semaphore deflateGate;
-    @Shadow(aliases = "field_149284_a") private int xPosition;
-    @Shadow(aliases = "field_149282_b") private int zPosition;
-    @Shadow(aliases = "field_149283_c") private int ebsMask;
-    @Shadow(aliases = "field_149281_e") private byte[] deflatedData;
-    @Shadow(aliases = "field_149278_f") private byte[] data;
-    @Shadow(aliases = "field_149279_g") private boolean forceUpdate;
-    @Shadow(aliases = "field_149285_h") private int deflatedSize;
-    @Shadow(aliases = "field_149286_i") private static byte[] buffer;
-
-    @Shadow protected abstract void deflate();
-
+    @Shadow(aliases = "field_149286_i")
+    private static byte[] buffer;
+    @Shadow
+    private Semaphore deflateGate;
+    @Shadow(aliases = "field_149284_a")
+    private int xPosition;
+    @Shadow(aliases = "field_149282_b")
+    private int zPosition;
+    @Shadow(aliases = "field_149283_c")
+    private int ebsMask;
+    @Shadow(aliases = "field_149281_e")
+    private byte[] deflatedData;
+    @Shadow(aliases = "field_149278_f")
+    private byte[] data;
+    @Shadow(aliases = "field_149279_g")
+    private boolean forceUpdate;
+    @Shadow(aliases = "field_149285_h")
+    private int deflatedSize;
 
     @ModifyConstant(method = {"<clinit>", "func_149275_c"},
                     constant = @Constant(intValue = 196864),
@@ -83,6 +89,9 @@ public abstract class S21PacketChunkDataMixin {
         return extracted;
     }
 
+    @Shadow
+    protected abstract void deflate();
+
     /**
      * @author FalsePattern
      * @reason Replace functionality
@@ -103,7 +112,7 @@ public abstract class S21PacketChunkDataMixin {
         data.writeInt(zPosition);
         System.out.println("Writing chunk packet (" + xPosition + ", " + zPosition + ")");
         data.writeBoolean(forceUpdate);
-        data.writeShort((short)(ebsMask & 0xFFFF));
+        data.writeShort((short) (ebsMask & 0xFFFF));
         data.writeInt(this.data.length);
         data.writeInt(deflatedSize);
         data.writeBytes(deflatedData, 0, deflatedSize);

@@ -19,7 +19,6 @@ import lombok.var;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.LoaderState;
 
@@ -39,7 +38,9 @@ public class ChunkDataRegistryImpl {
     private static final Map<String, ChunkDataManager.SectionNBTDataManager> sectionNBTManagers = new HashMap<>();
     private static final Set<String> disabledManagers = new HashSet<>();
     private static int maxPacketSize = 4;
-    public static void registerDataManager(ChunkDataManager manager) throws IllegalStateException, IllegalArgumentException {
+
+    public static void registerDataManager(ChunkDataManager manager)
+            throws IllegalStateException, IllegalArgumentException {
         if (Loader.instance().getLoaderState() != LoaderState.INITIALIZATION) {
             throw new IllegalStateException("ChunkDataManager registration is not allowed at this time! " +
                                             "Please register your ChunkDataManager in the init phase.");
@@ -74,7 +75,8 @@ public class ChunkDataRegistryImpl {
             throw new IllegalStateException("ChunkDataManager disabling is not allowed at this time! " +
                                             "Please disable any ChunkDataManagers in the postInit phase.");
         }
-        Common.LOG.warn("Disabling ChunkDataManager " + id + " in domain " + domain + ". See the stacktrace for the source of this event.", new Throwable());
+        Common.LOG.warn("Disabling ChunkDataManager " + id + " in domain " + domain +
+                        ". See the stacktrace for the source of this event.", new Throwable());
         val manager = domain + ":" + id;
         //Remove the manager from the list of managers, if it exists
         if (managers.remove(manager)) {
@@ -133,7 +135,7 @@ public class ChunkDataRegistryImpl {
         val buf = ByteBuffer.wrap(data);
         buf.order(ByteOrder.LITTLE_ENDIAN);
         buf.putInt(packetManagers.size());
-        for (val pair: packetManagers.entrySet()) {
+        for (val pair : packetManagers.entrySet()) {
             val id = pair.getKey();
             val manager = pair.getValue();
             writeString(buf, id);
@@ -191,25 +193,27 @@ public class ChunkDataRegistryImpl {
     }
 
     public static void writeSectionToNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound sectionNBT) {
-        for (val manager: sectionNBTManagers.values()) {
-            manager.writeSectionToNBT(chunk, ebs, createManagerNBT(manager.sectionPrivilegedAccess(), sectionNBT, manager));
+        for (val manager : sectionNBTManagers.values()) {
+            manager.writeSectionToNBT(chunk, ebs,
+                                      createManagerNBT(manager.sectionPrivilegedAccess(), sectionNBT, manager));
         }
     }
 
     public static void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound sectionNBT) {
-        for (val manager: sectionNBTManagers.values()) {
-            manager.readSectionFromNBT(chunk, ebs, getManagerNBT(manager.sectionPrivilegedAccess(), sectionNBT, manager));
+        for (val manager : sectionNBTManagers.values()) {
+            manager.readSectionFromNBT(chunk, ebs,
+                                       getManagerNBT(manager.sectionPrivilegedAccess(), sectionNBT, manager));
         }
     }
 
     public static void writeChunkToNBT(Chunk chunk, NBTTagCompound chunkNBT) {
-        for (val manager: chunkNBTManagers.values()) {
+        for (val manager : chunkNBTManagers.values()) {
             manager.writeChunkToNBT(chunk, createManagerNBT(manager.chunkPrivilegedAccess(), chunkNBT, manager));
         }
     }
 
     public static void readChunkFromNBT(Chunk chunk, NBTTagCompound chunkNBT) {
-        for (val manager: chunkNBTManagers.values()) {
+        for (val manager : chunkNBTManagers.values()) {
             manager.readChunkFromNBT(chunk, getManagerNBT(manager.chunkPrivilegedAccess(), chunkNBT, manager));
         }
     }
