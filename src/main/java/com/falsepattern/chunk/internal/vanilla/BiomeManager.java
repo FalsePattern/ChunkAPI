@@ -14,10 +14,8 @@ package com.falsepattern.chunk.internal.vanilla;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 import java.nio.ByteBuffer;

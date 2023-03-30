@@ -14,10 +14,8 @@ package com.falsepattern.chunk.internal.vanilla;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
 import lombok.val;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
