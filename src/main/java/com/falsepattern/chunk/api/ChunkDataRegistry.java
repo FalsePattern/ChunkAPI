@@ -14,6 +14,8 @@ package com.falsepattern.chunk.api;
 
 import com.falsepattern.chunk.internal.ChunkDataRegistryImpl;
 
+import java.util.Set;
+
 /**
  * This class is used to register ChunkDataManagers.
  * @see ChunkDataManager
@@ -36,5 +38,13 @@ public class ChunkDataRegistry {
      */
     public static void disableDataManager(String domain, String id) throws IllegalStateException {
         ChunkDataRegistryImpl.disableDataManager(domain, id);
+    }
+
+    /**
+     * Returns an unmodifiable set of all registered ChunkDataManagers.
+     * The id of a manager is its domain and id separated by a colon. (domain:id)
+     */
+    public static Set<String> getRegisteredManagers() {
+        return ChunkDataRegistryImpl.getRegisteredManagers();
     }
 }

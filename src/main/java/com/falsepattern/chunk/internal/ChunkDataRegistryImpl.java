@@ -20,9 +20,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,9 +40,9 @@ public class ChunkDataRegistryImpl {
     private static final Set<String> disabledManagers = new HashSet<>();
     private static int maxPacketSize = 4;
     public static void registerDataManager(ChunkDataManager manager) throws IllegalStateException, IllegalArgumentException {
-        if (!ChunkAPI.isRegistrationStage()) {
+        if (Loader.instance().getLoaderState() != LoaderState.INITIALIZATION) {
             throw new IllegalStateException("ChunkDataManager registration is not allowed at this time! " +
-                                                   "Please register your ChunkDataManager in the preInit phase of your mod.");
+                                            "Please register your ChunkDataManager in the init phase.");
         }
         var id = manager.domain() + ":" + manager.id();
         if (managers.contains(id)) {
@@ -66,9 +70,9 @@ public class ChunkDataRegistryImpl {
     }
 
     public static void disableDataManager(String domain, String id) {
-        if (!ChunkAPI.isDisableStage()) {
+        if (Loader.instance().getLoaderState() != LoaderState.POSTINITIALIZATION) {
             throw new IllegalStateException("ChunkDataManager disabling is not allowed at this time! " +
-                                            "Please disable any ChunkDataManagers in the preInit/init phases.");
+                                            "Please disable any ChunkDataManagers in the postInit phase.");
         }
         Common.LOG.warn("Disabling ChunkDataManager " + id + " in domain " + domain + ". See the stacktrace for the source of this event.", new Throwable());
         val manager = domain + ":" + id;
@@ -208,5 +212,9 @@ public class ChunkDataRegistryImpl {
         for (val manager: chunkNBTManagers.values()) {
             manager.readChunkFromNBT(chunk, getManagerNBT(manager.chunkPrivilegedAccess(), chunkNBT, manager));
         }
+    }
+
+    public static Set<String> getRegisteredManagers() {
+        return Collections.unmodifiableSet(managers);
     }
 }

@@ -58,8 +58,8 @@ Instead of being called once per chunk, it is called once per chunk section (16x
 
 ### ChunkDataRegistry
 This is where you actually register your manager. You need to do all registrations inside the `init` phase.
-You can also disable specific manager IDs by calling `disableDataManager`, but this is not recommended,
-and should only be used if you know what you are doing.
+You can also disable specific manager IDs by calling `disableDataManager`, but this is not recommended, and should
+only be used if you know what you are doing. You need to do all the disabling inside the `postInit` phase.
 
 Alternatives
 ------------
