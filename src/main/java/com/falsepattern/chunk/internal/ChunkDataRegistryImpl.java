@@ -4,28 +4,35 @@ import com.falsepattern.chunk.api.ChunkDataManager;
 import lombok.val;
 import lombok.var;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ChunkDataRegistryImpl {
-    @SuppressWarnings("rawtypes")
-    private static final Map<String, ChunkDataManager> managers = new HashMap<>();
+    private static final Set<String> managers = new HashSet<>();
+    private static final Map<String, ChunkDataManager.PacketDataManager> packetManagers = new HashMap<>();
+    private static final Map<String, ChunkDataManager.ChunkNBTDataManager> chunkNBTManagers = new HashMap<>();
+    private static final Map<String, ChunkDataManager.SectionNBTDataManager> sectionNBTManagers = new HashMap<>();
     private static final Set<String> disabledManagers = new HashSet<>();
-    private static int maxPacketSize = 0;
-    public static void registerDataManager(ChunkDataManager<?> manager) throws IllegalStateException, IllegalArgumentException {
+    private static int maxPacketSize = 4;
+    public static void registerDataManager(ChunkDataManager manager) throws IllegalStateException, IllegalArgumentException {
         if (!ChunkAPI.isRegistrationStage()) {
             throw new IllegalStateException("ChunkDataManager registration is not allowed at this time! " +
                                                    "Please register your ChunkDataManager in the preInit phase of your mod.");
         }
         var id = manager.domain() + ":" + manager.id();
-        if (managers.containsKey(id)) {
+        if (managers.contains(id)) {
             throw new IllegalArgumentException("ChunkDataManager " + manager + " has a duplicate id!");
         }
 
@@ -34,9 +41,19 @@ public class ChunkDataRegistryImpl {
             return;
         }
 
-        managers.put(id, manager);
-        maxPacketSize += 4 + id.getBytes(StandardCharsets.UTF_8).length;
-        maxPacketSize += manager.maxPacketSize();
+        managers.add(id);
+        if (manager instanceof ChunkDataManager.PacketDataManager) {
+            val packetManager = (ChunkDataManager.PacketDataManager) manager;
+            maxPacketSize += 4 + id.getBytes(StandardCharsets.UTF_8).length;
+            maxPacketSize += packetManager.maxPacketSize();
+            packetManagers.put(id, packetManager);
+        }
+        if (manager instanceof ChunkDataManager.ChunkNBTDataManager) {
+            chunkNBTManagers.put(id, (ChunkDataManager.ChunkNBTDataManager) manager);
+        }
+        if (manager instanceof ChunkDataManager.SectionNBTDataManager) {
+            sectionNBTManagers.put(id, (ChunkDataManager.SectionNBTDataManager) manager);
+        }
     }
 
     public static void disableDataManager(String domain, String id) {
@@ -44,17 +61,22 @@ public class ChunkDataRegistryImpl {
             throw new IllegalStateException("ChunkDataManager disabling is not allowed at this time! " +
                                             "Please disable any ChunkDataManagers in the preInit/init phases.");
         }
-        id = domain + ":" + id;
-        Common.LOG.warn("Disabling ChunkDataManager " + id + ". See the stacktrace for the source of this event.", new Throwable());
+        Common.LOG.warn("Disabling ChunkDataManager " + id + " in domain " + domain + ". See the stacktrace for the source of this event.", new Throwable());
+        val manager = domain + ":" + id;
         //Remove the manager from the list of managers, if it exists
-        val removed = managers.remove(id);
-        if (removed != null) {
-            maxPacketSize -= 4 + id.getBytes(StandardCharsets.UTF_8).length;
-            maxPacketSize -= removed.maxPacketSize();
+        if (managers.remove(manager)) {
+            //Clear the maps
+            if (packetManagers.containsKey(id)) {
+                val removed = packetManagers.remove(id);
+                maxPacketSize -= 4 + id.getBytes(StandardCharsets.UTF_8).length;
+                maxPacketSize -= removed.maxPacketSize();
+            }
+            chunkNBTManagers.remove(id);
+            sectionNBTManagers.remove(id);
         }
 
         //Add the manager to the list of disabled managers, in case it gets registered after this disable call.
-        disabledManagers.add(id);
+        disabledManagers.add(manager);
     }
 
     public static int maxPacketSize() {
@@ -74,7 +96,6 @@ public class ChunkDataRegistryImpl {
         return new String(bytes);
     }
 
-    @SuppressWarnings("unchecked")
     public static void readFromBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, byte[] data) {
         val buf = ByteBuffer.wrap(data);
         buf.order(ByteOrder.LITTLE_ENDIAN);
@@ -82,9 +103,9 @@ public class ChunkDataRegistryImpl {
         for (int i = 0; i < count; i++) {
             val id = readString(buf);
             val length = buf.getInt();
-            val manager = managers.get(id);
+            val manager = packetManagers.get(id);
             if (manager == null) {
-                Common.LOG.error("Received data for unknown ChunkDataManager " + id + ". Skipping.");
+                Common.LOG.error("Received data for unknown PacketDataManager " + id + ". Skipping.");
                 buf.position(buf.position() + length);
                 continue;
             }
@@ -95,14 +116,14 @@ public class ChunkDataRegistryImpl {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static int writeToBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, byte[] data) {
         val buf = ByteBuffer.wrap(data);
         buf.order(ByteOrder.LITTLE_ENDIAN);
-        buf.putInt(managers.size());
-        for (val pair: managers.entrySet()) {
+        buf.putInt(packetManagers.size());
+        for (val pair: packetManagers.entrySet()) {
+            val id = pair.getKey();
             val manager = pair.getValue();
-            writeString(buf, pair.getKey());
+            writeString(buf, id);
             int start = buf.position() + 4;
             val slice = createSlice(buf, start, manager.maxPacketSize());
             manager.writeToBuffer(chunk, ebsMask, forceUpdate, slice);
@@ -122,5 +143,61 @@ public class ChunkDataRegistryImpl {
         buffer.limit(oldLimit);
         buffer.position(oldPosition);
         return slice;
+    }
+
+    private static NBTTagCompound createManagerNBT(boolean privileged, NBTTagCompound root, ChunkDataManager manager) {
+        if (privileged) {
+            return root;
+        }
+        val domain = manager.domain();
+        NBTTagCompound domainNBT;
+        if (root.hasKey(domain)) {
+            domainNBT = new NBTTagCompound();
+            root.setTag(domain, domainNBT);
+        } else {
+            domainNBT = root.getCompoundTag(domain);
+        }
+        val subNBT = new NBTTagCompound();
+        domainNBT.setTag(manager.id(), subNBT);
+        return subNBT;
+    }
+
+    private static NBTTagCompound getManagerNBT(boolean privileged, NBTTagCompound root, ChunkDataManager manager) {
+        if (privileged) {
+            return root;
+        }
+        val domain = manager.domain();
+        if (!root.hasKey(domain)) {
+            return null;
+        }
+        val domainNBT = root.getCompoundTag(domain);
+        if (!domainNBT.hasKey(manager.id())) {
+            return null;
+        }
+        return domainNBT.getCompoundTag(manager.id());
+    }
+
+    public static void writeSectionToNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound sectionNBT) {
+        for (val manager: sectionNBTManagers.values()) {
+            manager.writeSectionToNBT(chunk, ebs, createManagerNBT(manager.sectionPrivilegedAccess(), sectionNBT, manager));
+        }
+    }
+
+    public static void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound sectionNBT) {
+        for (val manager: sectionNBTManagers.values()) {
+            manager.readSectionFromNBT(chunk, ebs, getManagerNBT(manager.sectionPrivilegedAccess(), sectionNBT, manager));
+        }
+    }
+
+    public static void writeChunkToNBT(Chunk chunk, NBTTagCompound chunkNBT) {
+        for (val manager: chunkNBTManagers.values()) {
+            manager.writeChunkToNBT(chunk, createManagerNBT(manager.chunkPrivilegedAccess(), chunkNBT, manager));
+        }
+    }
+
+    public static void readChunkFromNBT(Chunk chunk, NBTTagCompound chunkNBT) {
+        for (val manager: chunkNBTManagers.values()) {
+            manager.readChunkFromNBT(chunk, getManagerNBT(manager.chunkPrivilegedAccess(), chunkNBT, manager));
+        }
     }
 }

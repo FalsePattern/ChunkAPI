@@ -1,17 +1,21 @@
 package com.falsepattern.chunk.internal.vanilla;
 
+import com.falsepattern.chunk.api.ChunkDataManager;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.NibbleArray;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import java.nio.ByteBuffer;
 
 import static com.falsepattern.chunk.internal.Common.BLOCKS_PER_EBS;
 import static com.falsepattern.chunk.internal.Common.EBS_PER_CHUNK;
 
-public class BlockIDManager extends VanillaManager {
+public class BlockIDManager extends VanillaManager implements ChunkDataManager.PacketDataManager, ChunkDataManager.SectionNBTDataManager {
     private static final int LSB_BYTES_PER_EBS = BLOCKS_PER_EBS;
     private static final int MSB_BYTES_PER_EBS = BLOCKS_PER_EBS / 2;
     private static final int HEADER_SIZE = 2;
@@ -72,12 +76,25 @@ public class BlockIDManager extends VanillaManager {
     }
 
     @Override
-    public void writeToNBT(Chunk chunk, @NotNull NBTTagCompound tag) {
-
+    public boolean sectionPrivilegedAccess() {
+        return true;
     }
 
     @Override
-    public void readFromNBT(Chunk chunk, @NotNull NBTTagCompound tag) {
+    public void writeSectionToNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
+        section.setByteArray("Blocks", ebs.getBlockLSBArray());
 
+        if (ebs.getBlockMSBArray() != null) {
+            section.setByteArray("Add", ebs.getBlockMSBArray().data);
+        }
+    }
+
+    @Override
+    public void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
+        ebs.setBlockLSBArray(section.getByteArray("Blocks"));
+
+        if (section.hasKey("Add", 7)) {
+            ebs.setBlockMSBArray(new NibbleArray(section.getByteArray("Add"), 4));
+        }
     }
 }

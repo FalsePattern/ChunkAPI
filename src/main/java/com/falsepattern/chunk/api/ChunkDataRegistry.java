@@ -13,7 +13,7 @@ public class ChunkDataRegistry {
      * @throws IllegalStateException If the registration stage is over.
      * @throws IllegalArgumentException If the manager has a duplicate id.
      */
-    public static void registerDataManager(ChunkDataManager<?> manager) throws IllegalStateException, IllegalArgumentException {
+    public static void registerDataManager(ChunkDataManager manager) throws IllegalStateException, IllegalArgumentException {
         ChunkDataRegistryImpl.registerDataManager(manager);
     }
 

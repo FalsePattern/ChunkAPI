@@ -53,7 +53,6 @@ public abstract class S21PacketChunkDataMixin {
         if (buffer.length < ChunkDataRegistryImpl.maxPacketSize()) {
             buffer = new byte[ChunkDataRegistryImpl.maxPacketSize()];
         }
-        val data = buffer;
 
         if (forceUpdate) {
             chunk.sendUpdates = true;
@@ -65,10 +64,10 @@ public abstract class S21PacketChunkDataMixin {
             }
         }
 
-        int length = ChunkDataRegistryImpl.writeToBuffer(chunk, extracted.field_150280_b, forceUpdate, data);
+        int length = ChunkDataRegistryImpl.writeToBuffer(chunk, extracted.field_150280_b, forceUpdate, buffer);
 
         extracted.field_150282_a = new byte[length];
-        System.arraycopy(data, 0, extracted.field_150282_a, 0, length);
+        System.arraycopy(buffer, 0, extracted.field_150282_a, 0, length);
         return extracted;
     }
 
@@ -90,6 +89,7 @@ public abstract class S21PacketChunkDataMixin {
         }
         data.writeInt(xPosition);
         data.writeInt(zPosition);
+        System.out.println("Writing chunk packet (" + xPosition + ", " + zPosition + ")");
         data.writeBoolean(forceUpdate);
         data.writeShort((short)(ebsMask & 0xFFFF));
         data.writeInt(this.data.length);
@@ -105,6 +105,7 @@ public abstract class S21PacketChunkDataMixin {
     public void readPacketData(PacketBuffer data) throws IOException {
         xPosition = data.readInt();
         zPosition = data.readInt();
+        System.out.println("Reading chunk packet (" + xPosition + ", " + zPosition + ")");
         forceUpdate = data.readBoolean();
         ebsMask = data.readShort() & 0xFFFF;
         this.data = new byte[data.readInt()];

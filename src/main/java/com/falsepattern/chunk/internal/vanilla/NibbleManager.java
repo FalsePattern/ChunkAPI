@@ -1,17 +1,16 @@
 package com.falsepattern.chunk.internal.vanilla;
 
+import com.falsepattern.chunk.api.ChunkDataManager;
 import com.falsepattern.chunk.internal.Common;
 import lombok.val;
-import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import java.nio.ByteBuffer;
 
-public abstract class NibbleManager extends VanillaManager {
+public abstract class NibbleManager extends VanillaManager implements ChunkDataManager.PacketDataManager {
     public static final int BYTES_PER_EBS = Common.BLOCKS_PER_EBS / 2;
 
     protected abstract NibbleArray getNibbleArray(ExtendedBlockStorage ebs);
@@ -45,15 +44,5 @@ public abstract class NibbleManager extends VanillaManager {
                 }
             }
         }
-    }
-
-    @Override
-    public void writeToNBT(Chunk chunk, @NotNull NBTTagCompound tag) {
-
-    }
-
-    @Override
-    public void readFromNBT(Chunk chunk, @NotNull NBTTagCompound tag) {
-
     }
 }

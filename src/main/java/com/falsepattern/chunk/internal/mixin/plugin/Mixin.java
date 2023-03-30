@@ -36,6 +36,7 @@ import static com.falsepattern.lib.mixin.IMixin.PredicateHelpers.always;
 @RequiredArgsConstructor
 public enum Mixin implements IMixin {
     // @formatter:off
+    AnvilChunkLoaderMixin(Side.COMMON, always(), "vanilla.AnvilChunkLoaderMixin"),
     S21PacketChunkDataMixin(Side.COMMON, always(), "vanilla.S21PacketChunkDataMixin"),
     S26PacketMapChunkBulkMixin(Side.COMMON, always(), "vanilla.S26PacketMapChunkBulkMixin"),
 
