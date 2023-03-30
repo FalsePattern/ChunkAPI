@@ -81,13 +81,13 @@ public class ChunkDataRegistryImpl {
         //Remove the manager from the list of managers, if it exists
         if (managers.remove(manager)) {
             //Clear the maps
-            if (packetManagers.containsKey(id)) {
-                val removed = packetManagers.remove(id);
-                maxPacketSize -= 4 + id.getBytes(StandardCharsets.UTF_8).length;
+            if (packetManagers.containsKey(manager)) {
+                val removed = packetManagers.remove(manager);
+                maxPacketSize -= 4 + manager.getBytes(StandardCharsets.UTF_8).length;
                 maxPacketSize -= removed.maxPacketSize();
             }
-            chunkNBTManagers.remove(id);
-            sectionNBTManagers.remove(id);
+            chunkNBTManagers.remove(manager);
+            sectionNBTManagers.remove(manager);
         }
 
         //Add the manager to the list of disabled managers, in case it gets registered after this disable call.
