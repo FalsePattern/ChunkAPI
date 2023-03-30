@@ -3,7 +3,7 @@
   "minVersion": "0.8.5",
   "package": "com.falsepattern.chunk.internal.mixin.mixins",
   "plugin": "com.falsepattern.chunk.internal.mixin.plugin.MixinPlugin",
-  "refmap": "mixins.fp_chunkapi.refmap.json",
+  "refmap": "mixins.chunkapi.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8"
 }
