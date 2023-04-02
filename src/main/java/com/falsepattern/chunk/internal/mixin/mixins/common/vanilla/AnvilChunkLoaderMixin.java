@@ -46,7 +46,6 @@ public abstract class AnvilChunkLoaderMixin {
         nbt.setByte("V", (byte) 1);
         nbt.setInteger("xPos", chunk.xPosition);
         nbt.setInteger("zPos", chunk.zPosition);
-        System.out.println("Saving chunk " + chunk.xPosition + ", " + chunk.zPosition);
         nbt.setLong("LastUpdate", world.getTotalWorldTime());
         nbt.setIntArray("HeightMap", chunk.heightMap);
         nbt.setBoolean("TerrainPopulated", chunk.isTerrainPopulated);
@@ -68,7 +67,6 @@ public abstract class AnvilChunkLoaderMixin {
     private Chunk readChunkFromNBT(World world, NBTTagCompound nbt) {
         int x = nbt.getInteger("xPos");
         int z = nbt.getInteger("zPos");
-        System.out.println("Loading chunk " + x + ", " + z);
         Chunk chunk = new Chunk(world, x, z);
         chunk.heightMap = nbt.getIntArray("HeightMap");
         chunk.isTerrainPopulated = nbt.getBoolean("TerrainPopulated");
