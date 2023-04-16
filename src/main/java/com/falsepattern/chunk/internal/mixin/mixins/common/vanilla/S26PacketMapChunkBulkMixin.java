@@ -40,6 +40,8 @@ public abstract class S26PacketMapChunkBulkMixin {
     private int[] zPositions;
     @Shadow(aliases = "field_149265_c")
     private int[] ebsMasks;
+    @Shadow(aliases = "field_149262_d")
+    private int[] ebsMSBMasks;
     @Shadow(aliases = "field_149261_g")
     private int deflatedSize;
     @Shadow(aliases = "field_149267_h")
@@ -66,6 +68,7 @@ public abstract class S26PacketMapChunkBulkMixin {
         xPositions = new int[chunkCount];
         zPositions = new int[chunkCount];
         ebsMasks = new int[chunkCount];
+        ebsMSBMasks = new int[chunkCount];
         datas = new byte[chunkCount][];
 
         if (inflaterBuffer.length < deflatedSize) {
