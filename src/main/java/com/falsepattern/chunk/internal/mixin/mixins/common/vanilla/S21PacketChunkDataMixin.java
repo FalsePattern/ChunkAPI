@@ -110,7 +110,6 @@ public abstract class S21PacketChunkDataMixin {
         }
         data.writeInt(xPosition);
         data.writeInt(zPosition);
-        System.out.println("Writing chunk packet (" + xPosition + ", " + zPosition + ")");
         data.writeBoolean(forceUpdate);
         data.writeShort((short) (ebsMask & 0xFFFF));
         data.writeInt(this.data.length);
@@ -126,7 +125,6 @@ public abstract class S21PacketChunkDataMixin {
     public void readPacketData(PacketBuffer data) throws IOException {
         xPosition = data.readInt();
         zPosition = data.readInt();
-        System.out.println("Reading chunk packet (" + xPosition + ", " + zPosition + ")");
         forceUpdate = data.readBoolean();
         ebsMask = data.readShort() & 0xFFFF;
         this.data = new byte[data.readInt()];
