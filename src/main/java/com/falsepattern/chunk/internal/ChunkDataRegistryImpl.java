@@ -160,16 +160,21 @@ public class ChunkDataRegistryImpl {
             return root;
         }
         val domain = manager.domain();
+        val id = manager.id();
         NBTTagCompound domainNBT;
         if (root.hasKey(domain)) {
+            domainNBT = root.getCompoundTag(domain);
+        } else {
             domainNBT = new NBTTagCompound();
             root.setTag(domain, domainNBT);
-        } else {
-            domainNBT = root.getCompoundTag(domain);
         }
-        val subNBT = new NBTTagCompound();
-        domainNBT.setTag(manager.id(), subNBT);
-        return subNBT;
+        if (domainNBT.hasKey(id)) {
+            return domainNBT.getCompoundTag(id);
+        } else {
+            val subNBT = new NBTTagCompound();
+            domainNBT.setTag(id, subNBT);
+            return subNBT;
+        }
     }
 
     private static NBTTagCompound getManagerNBT(boolean privileged, NBTTagCompound root, ChunkDataManager manager) {
@@ -178,11 +183,11 @@ public class ChunkDataRegistryImpl {
         }
         val domain = manager.domain();
         if (!root.hasKey(domain)) {
-            return null;
+            return new NBTTagCompound();
         }
         val domainNBT = root.getCompoundTag(domain);
         if (!domainNBT.hasKey(manager.id())) {
-            return null;
+            return new NBTTagCompound();
         }
         return domainNBT.getCompoundTag(manager.id());
     }
