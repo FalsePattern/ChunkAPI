@@ -32,7 +32,7 @@ Modifying chunk packet data involved incompatibly modifying network packets, the
 which is a lot of work for a simple feature. This mod provides a way to add custom data to chunks without having
 to modify any of the vanilla classes yourself.
 
-Description
+API and spec
 -----------
 
 The API exposes a way to add custom data to chunks, and a way to register custom serializers for the data.
@@ -60,27 +60,54 @@ This is where you actually register your manager. You need to do all registratio
 You can also disable specific manager IDs by calling `disableDataManager`, but this is not recommended, and should
 only be used if you know what you are doing. You need to do all the disabling inside the `postInit` phase.
 
-Alternatives
-------------
+### Packet specification
 
-Mods can also implement their own chunk-independent data storage, or even use hidden entities to store data, but
-this is not a good solution and prone to breaking.
+ChunkAPI modifies the S21PacketChunkData and S26PacketMapChunkBulk vanilla packets, and overwrites their default
+formats.
 
-Testing
--------
+All sizes in the tables below are specified in bytes.
 
-This mod will be tested by using it in my own mods, primarily EndlessIDs.
+S21PacketChunkData new format:
 
-Risks and Assumptions
----------------------
+| Size (bytes) | Datatype | Name                       |
+|--------------|----------|----------------------------|
+| 4            | int      | X position                 |
+| 4            | int      | Z position                 |
+| 1            | bool     | Force Update               |
+| 2            | short    | ExtendedBlockStorage mask  |
+| 4            | int      | Uncompressed data length   |
+| 4            | int      | (n) Compressed data length |
+| n            | byte[n]  | Compressed data            |
 
-This might slow down chunk loading/saving, and the networking, if the implementation turns out to be bad.
-Ideally, mods should declare their custom data as new fields in the chunk class using mixins instead of the
-ModdedChunk storage, but this is not a requirement.
+S26PacketMapChunkBulk new format:
 
-Ideally, this project must not have any derivatives or forks, as that will counter the primary purpose of this project,
-which is a single, unified codebase for chunk data exchange. For that goal, the project is explicitly licensed such as
-no derivatives are permitted.
+| Size (bytes) | Datatype             | Name                            |
+|--------------|----------------------|---------------------------------|
+| 2            | short                | (n) Chunk count in packet       |
+| n * 4        | int[n]               | Uncompressed chunk data lengths |
+| 4            | int                  | (m) Compressed data length      |
+| 1            | 1                    | Contains skylight data          |
+| m            | byte[m]              | Compressed data                 |
+| n * 10       | (int, int, short)[n] | Chunk Headers (x, z, ebs mask)  |
+
+In both cases, the compressed data is populated through the ChunkDataRegistryImpl.writeToBuffer method.
+The layout of this data is as follows:
+
+| Size (bytes) | Datatype | Name              |
+|--------------|----------|-------------------|
+| 4            | int      | (n) Manager count |
+| n * varying  | MGRData  | Manager data      |
+
+Manager data:
+
+| Size (bytes) | Datatype  | Name                    |
+|--------------|-----------|-------------------------|
+| 4            | int       | (n) Manager name length |
+| n            | UTF-8 str | Manager name            |
+| 4            | int       | (m) Manager data length |
+| m            | byte[m]   | Manager data            |
+
+
 
 Dependencies
 ------------
