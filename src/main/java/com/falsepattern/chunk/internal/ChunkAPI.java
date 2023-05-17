@@ -11,6 +11,7 @@ import com.falsepattern.chunk.api.ChunkDataRegistry;
 import com.falsepattern.chunk.internal.vanilla.BiomeManager;
 import com.falsepattern.chunk.internal.vanilla.BlockIDManager;
 import com.falsepattern.chunk.internal.vanilla.BlocklightManager;
+import com.falsepattern.chunk.internal.vanilla.LightingManager;
 import com.falsepattern.chunk.internal.vanilla.MetadataManager;
 import com.falsepattern.chunk.internal.vanilla.SkylightManager;
 
@@ -28,6 +29,7 @@ public class ChunkAPI {
     public void init(FMLInitializationEvent event) {
         ChunkDataRegistry.registerDataManager(new BlockIDManager());
         ChunkDataRegistry.registerDataManager(new MetadataManager());
+        ChunkDataRegistry.registerDataManager(new LightingManager());
         ChunkDataRegistry.registerDataManager(new BlocklightManager());
         ChunkDataRegistry.registerDataManager(new SkylightManager());
         ChunkDataRegistry.registerDataManager(new BiomeManager());
