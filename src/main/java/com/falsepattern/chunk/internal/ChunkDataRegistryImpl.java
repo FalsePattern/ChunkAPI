@@ -70,8 +70,8 @@ public class ChunkDataRegistryImpl {
             throw new IllegalStateException("ChunkDataManager disabling is not allowed at this time! " +
                                             "Please disable any ChunkDataManagers in the postInit phase.");
         }
-        Common.LOG.warn("Disabling ChunkDataManager " + id + " in domain " + domain +
-                        ". See the stacktrace for the source of this event.", new Throwable());
+        Common.LOG.debug("Disabling ChunkDataManager " + id + " in domain " + domain +
+                        ". See the stacktrace for the source of this event.\nThis is NOT an error.", new Throwable());
         val manager = domain + ":" + id;
         //Remove the manager from the list of managers, if it exists
         if (managers.remove(manager)) {
