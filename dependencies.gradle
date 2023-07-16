@@ -1,11 +1,11 @@
 dependencies {
-    compileOnly("org.projectlombok:lombok:[1.18.24,1.19)") {
+    compileOnly("org.projectlombok:lombok:1.18.28") {
         transitive = false
     }
-    annotationProcessor("org.projectlombok:lombok:[1.18.24,1.19)")
+    annotationProcessor("org.projectlombok:lombok:1.18.28")
 
-    implementation("com.falsepattern:falsepatternlib-mc1.7.10:[0.11,0.12):dev")
+    implementation("com.falsepattern:falsepatternlib-mc1.7.10:0.11.4:dev")
 
-    compileOnly("org.jetbrains:annotations:[24,25)")
+    compileOnly("org.jetbrains:annotations:24.0.1")
 
 }
