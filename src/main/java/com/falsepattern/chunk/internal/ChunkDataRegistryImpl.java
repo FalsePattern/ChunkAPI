@@ -8,6 +8,7 @@
 package com.falsepattern.chunk.internal;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
+import lombok.Data;
 import lombok.val;
 import lombok.var;
 
@@ -28,11 +29,17 @@ import java.util.Set;
 
 public class ChunkDataRegistryImpl {
     private static final Set<String> managers = new HashSet<>();
-    private static final Map<String, ChunkDataManager.PacketDataManager> packetManagers = new HashMap<>();
+    private static final Map<String, PacketManagerInfo> packetManagers = new HashMap<>();
     private static final Map<String, ChunkDataManager.ChunkNBTDataManager> chunkNBTManagers = new HashMap<>();
     private static final Map<String, ChunkDataManager.SectionNBTDataManager> sectionNBTManagers = new HashMap<>();
     private static final Set<String> disabledManagers = new HashSet<>();
     private static int maxPacketSize = 4;
+
+    @Data
+    private static class PacketManagerInfo {
+        public final int maxPacketSize;
+        public final ChunkDataManager.PacketDataManager manager;
+    }
 
     public static void registerDataManager(ChunkDataManager manager)
             throws IllegalStateException, IllegalArgumentException {
@@ -53,9 +60,9 @@ public class ChunkDataRegistryImpl {
         managers.add(id);
         if (manager instanceof ChunkDataManager.PacketDataManager) {
             val packetManager = (ChunkDataManager.PacketDataManager) manager;
-            maxPacketSize += 4 + id.getBytes(StandardCharsets.UTF_8).length;
-            maxPacketSize += packetManager.maxPacketSize();
-            packetManagers.put(id, packetManager);
+            val maxSize = packetManager.maxPacketSize();
+            maxPacketSize += 4 + id.getBytes(StandardCharsets.UTF_8).length + 4 + maxSize;
+            packetManagers.put(id, new PacketManagerInfo(maxSize, packetManager));
         }
         if (manager instanceof ChunkDataManager.ChunkNBTDataManager) {
             chunkNBTManagers.put(id, (ChunkDataManager.ChunkNBTDataManager) manager);
@@ -78,8 +85,7 @@ public class ChunkDataRegistryImpl {
             //Clear the maps
             if (packetManagers.containsKey(manager)) {
                 val removed = packetManagers.remove(manager);
-                maxPacketSize -= 4 + manager.getBytes(StandardCharsets.UTF_8).length;
-                maxPacketSize -= removed.maxPacketSize();
+                maxPacketSize -= 4 + id.getBytes(StandardCharsets.UTF_8).length + 4 + removed.maxPacketSize;
             }
             chunkNBTManagers.remove(manager);
             sectionNBTManagers.remove(manager);
@@ -113,15 +119,18 @@ public class ChunkDataRegistryImpl {
         for (int i = 0; i < count; i++) {
             val id = readString(buf);
             val length = buf.getInt();
-            val manager = packetManagers.get(id);
-            if (manager == null) {
+            val managerInfo = packetManagers.get(id);
+            if (managerInfo == null) {
                 Common.LOG.error("Received data for unknown PacketDataManager " + id + ". Skipping.");
                 buf.position(buf.position() + length);
                 continue;
             }
+            if (length > managerInfo.maxPacketSize) {
+                Common.LOG.error("Received packet larger than max size for PacketDataManager " + id + "! Continuing anyways, things might break!");
+            }
             int start = buf.position();
             val slice = createSlice(buf, start, length);
-            manager.readFromBuffer(chunk, ebsMask, forceUpdate, slice);
+            managerInfo.manager.readFromBuffer(chunk, ebsMask, forceUpdate, slice);
             buf.position(start + length);
         }
     }
@@ -132,11 +141,11 @@ public class ChunkDataRegistryImpl {
         buf.putInt(packetManagers.size());
         for (val pair : packetManagers.entrySet()) {
             val id = pair.getKey();
-            val manager = pair.getValue();
+            val managerInfo = pair.getValue();
             writeString(buf, id);
             int start = buf.position() + 4;
-            val slice = createSlice(buf, start, manager.maxPacketSize());
-            manager.writeToBuffer(chunk, ebsMask, forceUpdate, slice);
+            val slice = createSlice(buf, start, managerInfo.maxPacketSize);
+            managerInfo.manager.writeToBuffer(chunk, ebsMask, forceUpdate, slice);
             int length = slice.position();
             buf.putInt(length);
             buf.position(start + length);

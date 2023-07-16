@@ -59,6 +59,7 @@ public interface ChunkDataManager {
          * @return The maximum amount of bytes your data can take up in a packet.
          *
          * @implNote This is used to determine the size of the packet compression/decompression buffer.
+         * Only called ONCE, during registration!
          */
         @StableAPI.Expose
         @Contract(pure = true)
