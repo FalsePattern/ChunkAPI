@@ -9,6 +9,8 @@ package com.falsepattern.chunk.api;
 
 import com.falsepattern.lib.StableAPI;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
@@ -85,6 +87,49 @@ public interface ChunkDataManager {
     }
 
     /**
+     * The common superinterface for ChunkNBTDataManager and SectionNBTDataManager.
+     * Contains version information and messages for users attempting to upgrade/remove versions.
+     */
+    @StableAPI(since = "0.4.0")
+    interface NBTDataManager extends ChunkDataManager {
+        /**
+         * @return The current version of the data manager
+         */
+        @StableAPI.Expose
+        @Contract(pure = true)
+        @NotNull
+        String version();
+
+        /**
+         * @return The message to show to users when a world is opened with this mod for the first time.
+         *         Return null to show no message, and treat the manager as fully compatible with vanilla.
+         */
+        @StableAPI.Expose
+        @Contract(pure = true)
+        @Nullable
+        String newInstallDescription();
+
+        /**
+         * @return The message to show to users when this mod is removed and they try to load the world (stored in the
+         * world's NBT during save)
+         */
+        @StableAPI.Expose
+        @Contract(pure = true)
+        @NotNull
+        String uninstallMessage();
+
+        /**
+         * @param priorVersion The version of the manager this world was saved with.
+         * @return A warning message to show to the user when upgrading.\
+         *         If null, the manager is treated as fully compatible with the old version, and no warning is shown.
+         */
+        @StableAPI.Expose
+        @Contract(pure = true)
+        @Nullable
+        String versionChangeMessage(String priorVersion);
+    }
+
+    /**
      * Implement this interface if you want to save your data to disk. This is called once per chunk.
      *
      * @since 0.1.0
@@ -92,7 +137,7 @@ public interface ChunkDataManager {
      * @version 0.1.0
      */
     @StableAPI(since = "0.1.0")
-    interface ChunkNBTDataManager extends ChunkDataManager {
+    interface ChunkNBTDataManager extends NBTDataManager {
         /**
          * If false, the given nbt compound will be a freshly created object that gets inserted into the actual
          * level NBT tag under the `domain:id` name.
@@ -133,7 +178,7 @@ public interface ChunkDataManager {
      * @version 0.1.0
      */
     @StableAPI(since = "0.1.0")
-    interface SectionNBTDataManager extends ChunkDataManager {
+    interface SectionNBTDataManager extends NBTDataManager {
         /**
          * If false, the given nbt compound will be a freshly created object that gets inserted into the actual
          * segment NBT tag under the `domain:id` name.

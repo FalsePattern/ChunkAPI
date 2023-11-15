@@ -23,7 +23,7 @@ import java.util.Set;
 @StableAPI(since = "0.1.0")
 public class ChunkDataRegistry {
     /**
-     * Registers a ChunkDataManager. Only do this during the preInit phase.
+     * Registers a ChunkDataManager. Only do this during the init phase.
      *
      * @param manager The manager to register.
      *
@@ -37,7 +37,7 @@ public class ChunkDataRegistry {
     }
 
     /**
-     * Disables a ChunkDataManager. Only do this during the preInit phase.
+     * Disables a ChunkDataManager. Only do this during the postInit phase.
      *
      * @param id The id of the manager to disable.
      *

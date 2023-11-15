@@ -4,7 +4,7 @@ dependencies {
     }
     annotationProcessor("org.projectlombok:lombok:1.18.28")
 
-    implementation("com.falsepattern:falsepatternlib-mc1.7.10:0.11.4:dev")
+    implementation("com.falsepattern:falsepatternlib-mc1.7.10:0.12.5:dev")
 
     compileOnly("org.jetbrains:annotations:24.0.1")
 

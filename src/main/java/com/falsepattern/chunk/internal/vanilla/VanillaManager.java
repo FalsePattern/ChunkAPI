@@ -8,10 +8,28 @@
 package com.falsepattern.chunk.internal.vanilla;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class VanillaManager implements ChunkDataManager {
     @Override
     public String domain() {
         return "minecraft";
+    }
+
+    public @NotNull String version() {
+        return "";
+    }
+
+    public @Nullable String newInstallDescription() {
+        return null;
+    }
+
+    public @NotNull String uninstallMessage() {
+        return "";
+    }
+
+    public @Nullable String versionChangeMessage(String priorVersion) {
+        return null;
     }
 }
