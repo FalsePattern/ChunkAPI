@@ -284,7 +284,7 @@ public class ChunkDataRegistryImpl {
         StringBuilder builder = new StringBuilder();
         val saveManagers = readManagers(tag);
         val removedManagers = new HashSet<>(saveManagers.keySet());
-        removedManagers.removeAll(managers);
+        removedManagers.removeAll(NBTManagers.keySet());
         if (!removedManagers.isEmpty()) {
             compatWarning = true;
             builder.append("\nThe following data managers are no longer present:\n");
@@ -301,15 +301,18 @@ public class ChunkDataRegistryImpl {
                 builder.append('\n');
             }
         }
-        val addedManagers = managers.stream()
-                                    .filter(manager -> !manager.startsWith("minecraft:"))
-                                    .filter(manager -> !saveManagers.containsKey(manager))
-                                    .collect(Collectors.toSet());
+        val addedManagers = NBTManagers.keySet()
+                                       .stream()
+                                       .filter(manager -> !manager.startsWith("minecraft:"))
+                                       .filter(manager -> !saveManagers.containsKey(manager))
+                                       .collect(Collectors.toSet());
         if (!addedManagers.isEmpty()) {
             compatWarning = true;
             builder.append("\nThe following data managers have been newly added:\n");
             for (val manager: addedManagers) {
                 val addedManager = NBTManagers.get(manager);
+                if (addedManager == null)
+                    continue;
                 builder.append(manager)
                               .append(' ').append(addedManager.version()).append('\n');
                 val installMessage = addedManager.newInstallDescription();
@@ -320,7 +323,7 @@ public class ChunkDataRegistryImpl {
         boolean changePrompt = false;
         for (val savedManager: saveManagers.entrySet()) {
             val managerName = savedManager.getKey();
-            if (managers.contains(managerName)) {
+            if (NBTManagers.containsKey(managerName)) {
                 val manager = savedManager.getValue();
                 val currentManager = NBTManagers.get(managerName);
                 val extraMessage = currentManager.versionChangeMessage(manager.version);
