@@ -12,8 +12,6 @@ import lombok.val;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S21PacketChunkData;

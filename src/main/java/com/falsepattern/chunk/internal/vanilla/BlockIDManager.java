@@ -7,8 +7,8 @@
 
 package com.falsepattern.chunk.internal.vanilla;
 
-import com.falsepattern.chunk.api.DataManager;
 import com.falsepattern.chunk.api.ArrayUtil;
+import com.falsepattern.chunk.api.DataManager;
 import lombok.val;
 
 import net.minecraft.nbt.NBTTagCompound;
