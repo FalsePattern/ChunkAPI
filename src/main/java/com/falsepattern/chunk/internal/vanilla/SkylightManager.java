@@ -17,54 +17,54 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import java.nio.ByteBuffer;
 
-public class SkylightManager extends NibbleManager implements DataManager.SubchunkDataManager {
+public class SkylightManager extends NibbleManager implements DataManager.SubChunkDataManager {
     @Override
     public String id() {
         return "skylight";
     }
 
     @Override
-    protected NibbleArray getNibbleArray(ExtendedBlockStorage subchunk) {
-        return subchunk.getSkylightArray();
+    protected NibbleArray getNibbleArray(ExtendedBlockStorage subChunk) {
+        return subChunk.getSkylightArray();
     }
 
     @Override
-    public void writeToBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer data) {
+    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer data) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            super.writeToBuffer(chunk, subchunkMask, forceUpdate, data);
+            super.writeToBuffer(chunk, subChunkMask, forceUpdate, data);
         }
     }
 
     @Override
-    public void readFromBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer buffer) {
+    public void readFromBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            super.readFromBuffer(chunk, subchunkMask, forceUpdate, buffer);
+            super.readFromBuffer(chunk, subChunkMask, forceUpdate, buffer);
         }
     }
 
     @Override
-    public boolean subchunkPrivilegedAccess() {
+    public boolean subChunkPrivilegedAccess() {
         return true;
     }
 
     @Override
-    public void writeSubchunkToNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
+    public void writeSubChunkToNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            nbt.setByteArray("SkyLight", subchunk.getSkylightArray().data);
+            nbt.setByteArray("SkyLight", subChunk.getSkylightArray().data);
         } else {
-            nbt.setByteArray("SkyLight", new byte[subchunk.getBlocklightArray().data.length]);
+            nbt.setByteArray("SkyLight", new byte[subChunk.getBlocklightArray().data.length]);
         }
     }
 
     @Override
-    public void readSubchunkFromNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
+    public void readSubChunkFromNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            subchunk.setSkylightArray(new NibbleArray(nbt.getByteArray("SkyLight"), 4));
+            subChunk.setSkylightArray(new NibbleArray(nbt.getByteArray("SkyLight"), 4));
         }
     }
 
     @Override
-    public void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+    public void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         if (!fromChunk.worldObj.provider.hasNoSky) {
             to.setSkylightArray(ArrayUtil.copyArray(from.getSkylightArray(), to.getSkylightArray()));
         } else {

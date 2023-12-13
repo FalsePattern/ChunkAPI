@@ -15,10 +15,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
-public class MetadataManager extends NibbleManager implements DataManager.SubchunkDataManager {
+public class MetadataManager extends NibbleManager implements DataManager.SubChunkDataManager {
     @Override
-    protected NibbleArray getNibbleArray(ExtendedBlockStorage subchunk) {
-        return subchunk.getMetadataArray();
+    protected NibbleArray getNibbleArray(ExtendedBlockStorage subChunk) {
+        return subChunk.getMetadataArray();
     }
 
     @Override
@@ -27,22 +27,22 @@ public class MetadataManager extends NibbleManager implements DataManager.Subchu
     }
 
     @Override
-    public boolean subchunkPrivilegedAccess() {
+    public boolean subChunkPrivilegedAccess() {
         return true;
     }
 
     @Override
-    public void writeSubchunkToNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
-        nbt.setByteArray("Data", subchunk.getMetadataArray().data);
+    public void writeSubChunkToNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
+        nbt.setByteArray("Data", subChunk.getMetadataArray().data);
     }
 
     @Override
-    public void readSubchunkFromNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
-        subchunk.setBlockMetadataArray(new NibbleArray(nbt.getByteArray("Data"), 4));
+    public void readSubChunkFromNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
+        subChunk.setBlockMetadataArray(new NibbleArray(nbt.getByteArray("Data"), 4));
     }
 
     @Override
-    public void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+    public void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         to.setBlockMetadataArray(ArrayUtil.copyArray(from.getMetadataArray(), to.getMetadataArray()));
     }
 }

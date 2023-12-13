@@ -37,7 +37,7 @@ public abstract class S21PacketChunkDataMixin {
     @Shadow(aliases = "field_149282_b")
     private int zPosition;
     @Shadow(aliases = "field_149283_c")
-    private int subchunkMask;
+    private int subChunkMask;
     @Shadow(aliases = "field_149281_e")
     private byte[] deflatedData;
     @Shadow(aliases = "field_149278_f")
@@ -62,8 +62,8 @@ public abstract class S21PacketChunkDataMixin {
      * @reason Replace functionality
      */
     @Overwrite
-    public static S21PacketChunkData.Extracted func_149269_a(Chunk chunk, boolean forceUpdate, int subchunkMask) {
-        ExtendedBlockStorage[] subchunks = chunk.getBlockStorageArray();
+    public static S21PacketChunkData.Extracted func_149269_a(Chunk chunk, boolean forceUpdate, int subChunkMask) {
+        ExtendedBlockStorage[] subChunks = chunk.getBlockStorageArray();
         S21PacketChunkData.Extracted extracted = new S21PacketChunkData.Extracted();
 
         if (buffer.length < DataRegistryImpl.maxPacketSize()) {
@@ -74,8 +74,8 @@ public abstract class S21PacketChunkDataMixin {
             chunk.sendUpdates = true;
         }
 
-        for (int i = 0; i < subchunks.length; ++i) {
-            if (subchunks[i] != null && (!forceUpdate || !subchunks[i].isEmpty()) && (subchunkMask & 1 << i) != 0) {
+        for (int i = 0; i < subChunks.length; ++i) {
+            if (subChunks[i] != null && (!forceUpdate || !subChunks[i].isEmpty()) && (subChunkMask & 1 << i) != 0) {
                 extracted.field_150280_b |= 1 << i;
             }
         }
@@ -109,7 +109,7 @@ public abstract class S21PacketChunkDataMixin {
         data.writeInt(xPosition);
         data.writeInt(zPosition);
         data.writeBoolean(forceUpdate);
-        data.writeShort((short) (subchunkMask & 0xFFFF));
+        data.writeShort((short) (subChunkMask & 0xFFFF));
         data.writeInt(this.data.length);
         data.writeInt(deflatedSize);
         data.writeBytes(deflatedData, 0, deflatedSize);
@@ -124,7 +124,7 @@ public abstract class S21PacketChunkDataMixin {
         xPosition = data.readInt();
         zPosition = data.readInt();
         forceUpdate = data.readBoolean();
-        subchunkMask = data.readShort() & 0xFFFF;
+        subChunkMask = data.readShort() & 0xFFFF;
         this.data = new byte[data.readInt()];
         deflatedSize = data.readInt();
         if (buffer.length < deflatedSize) {

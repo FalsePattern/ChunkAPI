@@ -76,14 +76,14 @@ public class DataRegistry {
     }
 
     /**
-     * Copies data from a source subchunk to a target subchunk.
-     * @param fromChunk The chunk that owns the *from* subchunk. Used by data managers for getting metadata about the world (skylight presence, etc.)
-     * @param from The subchunk to read the data from
-     * @param to The subchunk to write the data to
+     * Copies data from a source subChunk to a target subChunk.
+     * @param fromChunk The chunk that owns the *from* subChunk. Used by data managers for getting metadata about the world (skylight presence, etc.)
+     * @param from The subChunk to read the data from
+     * @param to The subChunk to write the data to
      */
     @Contract(mutates = "param3")
     @StableAPI.Expose(since = "0.5.0")
-    public static void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
-        DataRegistryImpl.cloneSubchunk(fromChunk, from, to);
+    public static void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+        DataRegistryImpl.cloneSubChunk(fromChunk, from, to);
     }
 }

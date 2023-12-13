@@ -22,7 +22,7 @@ import static com.falsepattern.chunk.internal.Common.BLOCKS_PER_SUBCHUNK;
 import static com.falsepattern.chunk.internal.Common.SUBCHUNKS_PER_CHUNK;
 
 public class BlockIDManager extends VanillaManager
-        implements DataManager.PacketDataManager, DataManager.SubchunkDataManager {
+        implements DataManager.PacketDataManager, DataManager.SubChunkDataManager {
     private static final int LSB_BYTES_PER_SUBCHUNK = BLOCKS_PER_SUBCHUNK;
     private static final int MSB_BYTES_PER_SUBCHUNK = BLOCKS_PER_SUBCHUNK / 2;
     private static final int HEADER_SIZE = 2;
@@ -38,16 +38,16 @@ public class BlockIDManager extends VanillaManager
     }
 
     @Override
-    public void writeToBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer data) {
-        val subchunks = chunk.getBlockStorageArray();
+    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer data) {
+        val subChunks = chunk.getBlockStorageArray();
         int currentPos = data.position();
         data.putShort((short) 0);
         int msbMask = 0;
-        for (int i = 0; i < subchunks.length; i++) {
-            if ((subchunkMask & (1 << i)) != 0) {
-                val subchunk = subchunks[i];
-                val lsb = subchunk.getBlockLSBArray();
-                val msb = subchunk.getBlockMSBArray();
+        for (int i = 0; i < subChunks.length; i++) {
+            if ((subChunkMask & (1 << i)) != 0) {
+                val subChunk = subChunks[i];
+                val lsb = subChunk.getBlockLSBArray();
+                val msb = subChunk.getBlockMSBArray();
                 data.put(lsb);
                 if (msb != null) {
                     msbMask |= 1 << i;
@@ -62,51 +62,51 @@ public class BlockIDManager extends VanillaManager
     }
 
     @Override
-    public void readFromBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer buffer) {
-        val subchunks = chunk.getBlockStorageArray();
+    public void readFromBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer) {
+        val subChunks = chunk.getBlockStorageArray();
         val msbMask = buffer.getShort() & 0xFFFF;
-        for (int i = 0; i < subchunks.length; i++) {
-            val subchunk = subchunks[i];
-            if ((subchunkMask & (1 << i)) != 0 && subchunk != null) {
-                buffer.get(subchunk.getBlockLSBArray());
+        for (int i = 0; i < subChunks.length; i++) {
+            val subChunk = subChunks[i];
+            if ((subChunkMask & (1 << i)) != 0 && subChunk != null) {
+                buffer.get(subChunk.getBlockLSBArray());
                 if ((msbMask & (1 << i)) != 0) {
-                    val msb = subchunk.getBlockMSBArray();
+                    val msb = subChunk.getBlockMSBArray();
                     if (msb == null) {
-                        subchunk.createBlockMSBArray();
+                        subChunk.createBlockMSBArray();
                     }
-                    buffer.get(subchunk.getBlockMSBArray().data);
+                    buffer.get(subChunk.getBlockMSBArray().data);
                 } else {
-                    subchunk.setBlockMSBArray(null);
+                    subChunk.setBlockMSBArray(null);
                 }
             }
         }
     }
 
     @Override
-    public boolean subchunkPrivilegedAccess() {
+    public boolean subChunkPrivilegedAccess() {
         return true;
     }
 
     @Override
-    public void writeSubchunkToNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
-        nbt.setByteArray("Blocks", subchunk.getBlockLSBArray());
+    public void writeSubChunkToNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
+        nbt.setByteArray("Blocks", subChunk.getBlockLSBArray());
 
-        if (subchunk.getBlockMSBArray() != null) {
-            nbt.setByteArray("Add", subchunk.getBlockMSBArray().data);
+        if (subChunk.getBlockMSBArray() != null) {
+            nbt.setByteArray("Add", subChunk.getBlockMSBArray().data);
         }
     }
 
     @Override
-    public void readSubchunkFromNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
-        subchunk.setBlockLSBArray(nbt.getByteArray("Blocks"));
+    public void readSubChunkFromNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
+        subChunk.setBlockLSBArray(nbt.getByteArray("Blocks"));
 
         if (nbt.hasKey("Add", 7)) {
-            subchunk.setBlockMSBArray(new NibbleArray(nbt.getByteArray("Add"), 4));
+            subChunk.setBlockMSBArray(new NibbleArray(nbt.getByteArray("Add"), 4));
         }
     }
 
     @Override
-    public void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+    public void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         to.setBlockLSBArray(ArrayUtil.copyArray(from.getBlockLSBArray(), to.getBlockLSBArray()));
         to.setBlockMSBArray(ArrayUtil.copyArray(from.getBlockMSBArray(), to.getBlockMSBArray()));
     }

@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 public abstract class NibbleManager extends VanillaManager implements DataManager.PacketDataManager {
     public static final int BYTES_PER_SUBCHUNK = Common.BLOCKS_PER_SUBCHUNK / 2;
 
-    protected abstract NibbleArray getNibbleArray(ExtendedBlockStorage subchunk);
+    protected abstract NibbleArray getNibbleArray(ExtendedBlockStorage subChunk);
 
     @Override
     public int maxPacketSize() {
@@ -28,26 +28,26 @@ public abstract class NibbleManager extends VanillaManager implements DataManage
     }
 
     @Override
-    public void writeToBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer data) {
-        val subchunks = chunk.getBlockStorageArray();
-        for (int i = 0; i < subchunks.length; i++) {
-            if ((subchunkMask & (1 << i)) != 0) {
-                val subchunk = subchunks[i];
-                if (subchunk != null) {
-                    data.put(getNibbleArray(subchunk).data, 0, BYTES_PER_SUBCHUNK);
+    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer data) {
+        val subChunks = chunk.getBlockStorageArray();
+        for (int i = 0; i < subChunks.length; i++) {
+            if ((subChunkMask & (1 << i)) != 0) {
+                val subChunk = subChunks[i];
+                if (subChunk != null) {
+                    data.put(getNibbleArray(subChunk).data, 0, BYTES_PER_SUBCHUNK);
                 }
             }
         }
     }
 
     @Override
-    public void readFromBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer buffer) {
-        val subchunks = chunk.getBlockStorageArray();
-        for (int i = 0; i < subchunks.length; i++) {
-            if ((subchunkMask & (1 << i)) != 0) {
-                val subchunk = subchunks[i];
-                if (subchunk != null) {
-                    buffer.get(getNibbleArray(subchunk).data, 0, BYTES_PER_SUBCHUNK);
+    public void readFromBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer) {
+        val subChunks = chunk.getBlockStorageArray();
+        for (int i = 0; i < subChunks.length; i++) {
+            if ((subChunkMask & (1 << i)) != 0) {
+                val subChunk = subChunks[i];
+                if (subChunk != null) {
+                    buffer.get(getNibbleArray(subChunk).data, 0, BYTES_PER_SUBCHUNK);
                 }
             }
         }

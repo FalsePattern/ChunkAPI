@@ -53,7 +53,7 @@ public abstract class ChunkMixin {
      */
     @SideOnly(Side.CLIENT)
     @Overwrite
-    public void fillChunk(byte[] data, int subchunkMask, int subchunkMSBMask, boolean forceUpdate) {
+    public void fillChunk(byte[] data, int subChunkMask, int subChunkMSBMask, boolean forceUpdate) {
         for (Object o : chunkTileEntityMap.values()) {
             TileEntity tileEntity = (TileEntity) o;
             tileEntity.updateContainingBlockInfo();
@@ -64,7 +64,7 @@ public abstract class ChunkMixin {
         boolean hasSky = !this.worldObj.provider.hasNoSky;
 
         for (int i = 0; i < storageArrays.length; i++) {
-            if ((subchunkMask & (1 << i)) != 0) {
+            if ((subChunkMask & (1 << i)) != 0) {
                 if (storageArrays[i] == null) {
                     storageArrays[i] = new ExtendedBlockStorage(i << 4, hasSky);
                 }
@@ -73,10 +73,10 @@ public abstract class ChunkMixin {
             }
         }
 
-        DataRegistryImpl.readFromBuffer((Chunk) (Object) this, subchunkMask, forceUpdate, data);
+        DataRegistryImpl.readFromBuffer((Chunk) (Object) this, subChunkMask, forceUpdate, data);
 
         for (int i = 0; i < storageArrays.length; ++i) {
-            if ((storageArrays[i] != null) && ((subchunkMask & (1 << i)) != 0)) {
+            if ((storageArrays[i] != null) && ((subChunkMask & (1 << i)) != 0)) {
                 storageArrays[i].removeInvalidBlocks();
             }
         }

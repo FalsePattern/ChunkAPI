@@ -34,9 +34,9 @@ public abstract class S26PacketMapChunkBulkMixin {
     @Shadow(aliases = "field_149264_b")
     private int[] zPositions;
     @Shadow(aliases = "field_149265_c")
-    private int[] subchunkMasks;
+    private int[] subChunkMasks;
     @Shadow(aliases = "field_149262_d")
-    private int[] subchunkMSBMasks;
+    private int[] subChunkMSBMasks;
     @Shadow(aliases = "field_149261_g")
     private int deflatedSize;
     @Shadow(aliases = "field_149267_h")
@@ -62,8 +62,8 @@ public abstract class S26PacketMapChunkBulkMixin {
         skylight = data.readBoolean();
         xPositions = new int[chunkCount];
         zPositions = new int[chunkCount];
-        subchunkMasks = new int[chunkCount];
-        subchunkMSBMasks = new int[chunkCount];
+        subChunkMasks = new int[chunkCount];
+        subChunkMSBMasks = new int[chunkCount];
         datas = new byte[chunkCount][];
 
         if (inflaterBuffer.length < deflatedSize) {
@@ -89,7 +89,7 @@ public abstract class S26PacketMapChunkBulkMixin {
             val size = sizes[i];
             xPositions[i] = data.readInt();
             zPositions[i] = data.readInt();
-            subchunkMasks[i] = data.readUnsignedShort();
+            subChunkMasks[i] = data.readUnsignedShort();
 
             datas[i] = new byte[size];
             System.arraycopy(buf, pos, datas[i], 0, size);
@@ -122,7 +122,7 @@ public abstract class S26PacketMapChunkBulkMixin {
         for (int i = 0; i < xPositions.length; ++i) {
             data.writeInt(xPositions[i]);
             data.writeInt(zPositions[i]);
-            data.writeShort((short) (subchunkMasks[i] & 65535));
+            data.writeShort((short) (subChunkMasks[i] & 65535));
         }
     }
 }

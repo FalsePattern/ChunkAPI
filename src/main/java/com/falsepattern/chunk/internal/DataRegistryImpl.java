@@ -38,7 +38,7 @@ public class DataRegistryImpl {
     private static final Map<String, PacketManagerInfo> packetManagers = new HashMap<>();
     private static final Map<String, DataManager.StorageDataManager> NBTManagers = new HashMap<>();
     private static final Map<String, DataManager.ChunkDataManager> chunkNBTManagers = new HashMap<>();
-    private static final Map<String, DataManager.SubchunkDataManager> subchunkNBTManagers = new HashMap<>();
+    private static final Map<String, DataManager.SubChunkDataManager> subChunkNBTManagers = new HashMap<>();
     private static final Set<String> disabledManagers = new HashSet<>();
     private static int maxPacketSize = 4;
 
@@ -76,8 +76,8 @@ public class DataRegistryImpl {
             if (manager instanceof DataManager.ChunkDataManager) {
                 chunkNBTManagers.put(id, (DataManager.ChunkDataManager) manager);
             }
-            if (manager instanceof DataManager.SubchunkDataManager) {
-                subchunkNBTManagers.put(id, (DataManager.SubchunkDataManager) manager);
+            if (manager instanceof DataManager.SubChunkDataManager) {
+                subChunkNBTManagers.put(id, (DataManager.SubChunkDataManager) manager);
             }
         }
     }
@@ -98,7 +98,7 @@ public class DataRegistryImpl {
                 maxPacketSize -= 4 + id.getBytes(StandardCharsets.UTF_8).length + 4 + removed.maxPacketSize;
             }
             chunkNBTManagers.remove(manager);
-            subchunkNBTManagers.remove(manager);
+            subChunkNBTManagers.remove(manager);
             NBTManagers.remove(manager);
         }
 
@@ -123,7 +123,7 @@ public class DataRegistryImpl {
         return new String(bytes);
     }
 
-    public static void readFromBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, byte[] data) {
+    public static void readFromBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, byte[] data) {
         val buf = ByteBuffer.wrap(data);
         buf.order(ByteOrder.LITTLE_ENDIAN);
         int count = buf.getInt();
@@ -141,12 +141,12 @@ public class DataRegistryImpl {
             }
             int start = buf.position();
             val slice = createSlice(buf, start, length);
-            managerInfo.manager.readFromBuffer(chunk, subchunkMask, forceUpdate, slice);
+            managerInfo.manager.readFromBuffer(chunk, subChunkMask, forceUpdate, slice);
             buf.position(start + length);
         }
     }
 
-    public static int writeToBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, byte[] data) {
+    public static int writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, byte[] data) {
         val buf = ByteBuffer.wrap(data);
         buf.order(ByteOrder.LITTLE_ENDIAN);
         buf.putInt(packetManagers.size());
@@ -156,7 +156,7 @@ public class DataRegistryImpl {
             writeString(buf, id);
             int start = buf.position() + 4;
             val slice = createSlice(buf, start, managerInfo.maxPacketSize);
-            managerInfo.manager.writeToBuffer(chunk, subchunkMask, forceUpdate, slice);
+            managerInfo.manager.writeToBuffer(chunk, subChunkMask, forceUpdate, slice);
             int length = slice.position();
             buf.putInt(length);
             buf.position(start + length);
@@ -212,17 +212,17 @@ public class DataRegistryImpl {
         return domainNBT.getCompoundTag(manager.id());
     }
 
-    public static void writeSubchunkToNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
-        for (val manager : subchunkNBTManagers.values()) {
-            manager.writeSubchunkToNBT(chunk, subchunk,
-                                       createManagerNBT(manager.subchunkPrivilegedAccess(), nbt, manager));
+    public static void writeSubChunkToNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
+        for (val manager : subChunkNBTManagers.values()) {
+            manager.writeSubChunkToNBT(chunk, subChunk,
+                                       createManagerNBT(manager.subChunkPrivilegedAccess(), nbt, manager));
         }
     }
 
-    public static void readSubchunkFromNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
-        for (val manager : subchunkNBTManagers.values()) {
-            manager.readSubchunkFromNBT(chunk, subchunk,
-                                        getManagerNBT(manager.subchunkPrivilegedAccess(), nbt, manager));
+    public static void readSubChunkFromNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
+        for (val manager : subChunkNBTManagers.values()) {
+            manager.readSubChunkFromNBT(chunk, subChunk,
+                                        getManagerNBT(manager.subChunkPrivilegedAccess(), nbt, manager));
         }
     }
 
@@ -244,9 +244,9 @@ public class DataRegistryImpl {
         }
     }
 
-    public static void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
-        for (val manager: subchunkNBTManagers.values()) {
-            manager.cloneSubchunk(fromChunk, from, to);
+    public static void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+        for (val manager: subChunkNBTManagers.values()) {
+            manager.cloneSubChunk(fromChunk, from, to);
         }
     }
 

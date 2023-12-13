@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
  * @since 0.5.0
  * @see PacketDataManager
  * @see ChunkDataManager
- * @see SubchunkDataManager
+ * @see SubChunkDataManager
  * @see DataRegistry
  * @author FalsePattern
  * @version 0.5.0
@@ -74,7 +74,7 @@ public interface DataManager {
          */
         @Contract(mutates = "param4")
         @StableAPI.Expose
-        void writeToBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer data);
+        void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer data);
 
         /**
          * Deserializes your data from a packet.
@@ -85,11 +85,11 @@ public interface DataManager {
          */
         @Contract(mutates = "param1,param4")
         @StableAPI.Expose
-        void readFromBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer buffer);
+        void readFromBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer);
     }
 
     /**
-     * The common superinterface for RootDataManager and SubchunkDataManager.
+     * The common superinterface for RootDataManager and SubChunkDataManager.
      * Contains version information and messages for users attempting to upgrade/remove versions.
      * @since 0.5.0
      * @author FalsePattern
@@ -185,7 +185,7 @@ public interface DataManager {
     }
 
     /**
-     * Implement this interface if you want to save your subchunk data to disk. This is called once per
+     * Implement this interface if you want to save your subChunk data to disk. This is called once per
      * ExtendedBlockStorage per chunk. (16 times per chunk)
      *
      * @since 0.5.0
@@ -193,7 +193,7 @@ public interface DataManager {
      * @version 0.5.0
      */
     @StableAPI(since = "0.5.0")
-    interface SubchunkDataManager extends StorageDataManager {
+    interface SubChunkDataManager extends StorageDataManager {
         /**
          * If false, the given nbt compound will be a freshly created object that gets inserted into the actual
          * segment NBT tag under the `domain:id` name.
@@ -204,7 +204,7 @@ public interface DataManager {
          */
         @StableAPI.Expose
         @Contract(pure = true)
-        default boolean subchunkPrivilegedAccess() {
+        default boolean subChunkPrivilegedAccess() {
             return false;
         }
 
@@ -213,25 +213,25 @@ public interface DataManager {
          */
         @Contract(mutates = "param3")
         @StableAPI.Expose
-        void writeSubchunkToNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt);
+        void writeSubChunkToNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt);
 
         /**
          * Deserializes your data from an NBT tag. This is used when loading the chunk from disk.
          * The NBT *may* be null if the chunk was saved before this manager was registered
-         * (e.g., loading save before the mod was added), and the manager is not {@link #subchunkPrivilegedAccess() privileged}.
+         * (e.g., loading save before the mod was added), and the manager is not {@link #subChunkPrivilegedAccess() privileged}.
          * In this case, you should initialize the data to a sane default.
          */
         @Contract(mutates = "param2")
         @StableAPI.Expose
-        void readSubchunkFromNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt);
+        void readSubChunkFromNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt);
 
         /**
-         * Directly copies data from one subchunk to another.
-         * @param fromChunk The owner of the subchunk to copy data from.
-         * @param from The subchunk to copy data from.
-         * @param to The subchunk to copy data to.
+         * Directly copies data from one subChunk to another.
+         * @param fromChunk The owner of the subChunk to copy data from.
+         * @param from The subChunk to copy data from.
+         * @param to The subChunk to copy data to.
          */
         @Contract(mutates = "param3")
-        void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to);
+        void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to);
     }
 }

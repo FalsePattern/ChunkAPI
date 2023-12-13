@@ -31,14 +31,14 @@ public class BiomeManager extends VanillaManager
     }
 
     @Override
-    public void writeToBuffer(@NotNull Chunk chunk, int subchunkMask, boolean forceUpdate, @NotNull ByteBuffer data) {
+    public void writeToBuffer(@NotNull Chunk chunk, int subChunkMask, boolean forceUpdate, @NotNull ByteBuffer data) {
         if (forceUpdate) {
             data.put(chunk.getBiomeArray());
         }
     }
 
     @Override
-    public void readFromBuffer(@NotNull Chunk chunk, int subchunkMask, boolean forceUpdate, @NotNull ByteBuffer buffer) {
+    public void readFromBuffer(@NotNull Chunk chunk, int subChunkMask, boolean forceUpdate, @NotNull ByteBuffer buffer) {
         if (forceUpdate) {
             buffer.get(chunk.getBiomeArray());
         }
