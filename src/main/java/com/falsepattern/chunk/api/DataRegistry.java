@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.api;
 
-import com.falsepattern.chunk.internal.ChunkDataRegistryImpl;
+import com.falsepattern.chunk.internal.DataRegistryImpl;
 import com.falsepattern.lib.StableAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
@@ -20,13 +20,13 @@ import java.util.Set;
 /**
  * This class is used to register ChunkDataManagers, as well as dispatch clone requests.
  *
- * @since 0.1.0
- * @see ChunkDataManager
+ * @since 0.5.0
+ * @see DataManager
  * @author FalsePattern
- * @version 0.1.0
+ * @version 0.5.0
  */
-@StableAPI(since = "0.1.0")
-public class ChunkDataRegistry {
+@StableAPI(since = "0.5.0")
+public class DataRegistry {
     /**
      * Registers a ChunkDataManager. Only do this during the init phase.
      *
@@ -36,9 +36,9 @@ public class ChunkDataRegistry {
      * @throws IllegalArgumentException If the manager has a duplicate id.
      */
     @StableAPI.Expose
-    public static void registerDataManager(ChunkDataManager manager)
+    public static void registerDataManager(DataManager manager)
             throws IllegalStateException, IllegalArgumentException {
-        ChunkDataRegistryImpl.registerDataManager(manager);
+        DataRegistryImpl.registerDataManager(manager);
     }
 
     /**
@@ -50,7 +50,7 @@ public class ChunkDataRegistry {
      */
     @StableAPI.Expose
     public static void disableDataManager(String domain, String id) throws IllegalStateException {
-        ChunkDataRegistryImpl.disableDataManager(domain, id);
+        DataRegistryImpl.disableDataManager(domain, id);
     }
 
     /**
@@ -60,7 +60,7 @@ public class ChunkDataRegistry {
     @Contract(pure = true)
     @StableAPI.Expose
     public static @Unmodifiable Set<String> getRegisteredManagers() {
-        return ChunkDataRegistryImpl.getRegisteredManagers();
+        return DataRegistryImpl.getRegisteredManagers();
     }
 
     /**
@@ -72,7 +72,7 @@ public class ChunkDataRegistry {
     @Contract(mutates = "param2")
     @StableAPI.Expose(since = "0.5.0")
     public static void cloneChunk(Chunk from, Chunk to) {
-        ChunkDataRegistryImpl.cloneChunk(from, to);
+        DataRegistryImpl.cloneChunk(from, to);
     }
 
     /**
@@ -83,7 +83,7 @@ public class ChunkDataRegistry {
      */
     @Contract(mutates = "param3")
     @StableAPI.Expose(since = "0.5.0")
-    public static void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
-        ChunkDataRegistryImpl.cloneSection(fromChunk, from, to);
+    public static void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+        DataRegistryImpl.cloneSubchunk(fromChunk, from, to);
     }
 }

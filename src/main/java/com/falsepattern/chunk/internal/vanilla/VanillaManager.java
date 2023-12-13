@@ -7,11 +7,11 @@
 
 package com.falsepattern.chunk.internal.vanilla;
 
-import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.DataManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class VanillaManager implements ChunkDataManager {
+public abstract class VanillaManager implements DataManager {
     @Override
     public String domain() {
         return "minecraft";

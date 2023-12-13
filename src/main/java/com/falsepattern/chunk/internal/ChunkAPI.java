@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.internal;
 
-import com.falsepattern.chunk.api.ChunkDataRegistry;
+import com.falsepattern.chunk.api.DataRegistry;
 import com.falsepattern.chunk.internal.vanilla.BiomeManager;
 import com.falsepattern.chunk.internal.vanilla.BlockIDManager;
 import com.falsepattern.chunk.internal.vanilla.BlocklightManager;
@@ -27,11 +27,11 @@ public class ChunkAPI {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        ChunkDataRegistry.registerDataManager(new BlockIDManager());
-        ChunkDataRegistry.registerDataManager(new MetadataManager());
-        ChunkDataRegistry.registerDataManager(new LightingManager());
-        ChunkDataRegistry.registerDataManager(new BlocklightManager());
-        ChunkDataRegistry.registerDataManager(new SkylightManager());
-        ChunkDataRegistry.registerDataManager(new BiomeManager());
+        DataRegistry.registerDataManager(new BlockIDManager());
+        DataRegistry.registerDataManager(new MetadataManager());
+        DataRegistry.registerDataManager(new LightingManager());
+        DataRegistry.registerDataManager(new BlocklightManager());
+        DataRegistry.registerDataManager(new SkylightManager());
+        DataRegistry.registerDataManager(new BiomeManager());
     }
 }

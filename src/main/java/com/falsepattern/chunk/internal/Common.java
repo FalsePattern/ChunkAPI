@@ -16,6 +16,6 @@ import org.apache.logging.log4j.Logger;
 public class Common {
     public static final Logger LOG = LogManager.getLogger(Tags.MODID);
 
-    public static final int EBS_PER_CHUNK = 16;
-    public static final int BLOCKS_PER_EBS = 16 * 16 * 16;
+    public static final int SUBCHUNKS_PER_CHUNK = 16;
+    public static final int BLOCKS_PER_SUBCHUNK = 16 * 16 * 16;
 }

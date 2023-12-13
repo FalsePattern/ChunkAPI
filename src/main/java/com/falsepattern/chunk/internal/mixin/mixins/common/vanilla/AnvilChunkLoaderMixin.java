@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
 
-import com.falsepattern.chunk.internal.ChunkDataRegistryImpl;
+import com.falsepattern.chunk.internal.DataRegistryImpl;
 import lombok.val;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,7 +44,7 @@ public abstract class AnvilChunkLoaderMixin {
         nbt.setLong("LastUpdate", world.getTotalWorldTime());
         nbt.setBoolean("TerrainPopulated", chunk.isTerrainPopulated);
         nbt.setLong("InhabitedTime", chunk.inhabitedTime);
-        writeSections(chunk, nbt);
+        writeSubchunks(chunk, nbt);
         writeCustomData(chunk, nbt);
         writeEntities(chunk, world, nbt);
     }
@@ -63,7 +63,7 @@ public abstract class AnvilChunkLoaderMixin {
         Chunk chunk = new Chunk(world, x, z);
         chunk.isTerrainPopulated = nbt.getBoolean("TerrainPopulated");
         chunk.inhabitedTime = nbt.getLong("InhabitedTime");
-        readSections(chunk, nbt);
+        readSubchunks(chunk, nbt);
         readCustomData(chunk, nbt);
 
         // End this method here and split off entity loading to another method
@@ -71,46 +71,46 @@ public abstract class AnvilChunkLoaderMixin {
     }
 
     private void readCustomData(Chunk chunk, NBTTagCompound nbt) {
-        ChunkDataRegistryImpl.readChunkFromNBT(chunk, nbt);
+        DataRegistryImpl.readChunkFromNBT(chunk, nbt);
     }
 
-    private void readSections(Chunk chunk, NBTTagCompound nbt) {
-        NBTTagList sections = nbt.getTagList("Sections", 10);
+    private void readSubchunks(Chunk chunk, NBTTagCompound nbt) {
+        NBTTagList subchunksNBT = nbt.getTagList("Sections", 10);
         byte segments = 16;
-        ExtendedBlockStorage[] ebsList = new ExtendedBlockStorage[segments];
+        ExtendedBlockStorage[] subchunkList = new ExtendedBlockStorage[segments];
 
-        for (int k = 0; k < sections.tagCount(); ++k) {
-            NBTTagCompound section = sections.getCompoundTagAt(k);
-            byte yLevel = section.getByte("Y");
-            ExtendedBlockStorage ebs = new ExtendedBlockStorage(yLevel << 4, !chunk.worldObj.provider.hasNoSky);
-            ChunkDataRegistryImpl.readSectionFromNBT(chunk, ebs, section);
+        for (int k = 0; k < subchunksNBT.tagCount(); ++k) {
+            NBTTagCompound subchunkNBT = subchunksNBT.getCompoundTagAt(k);
+            byte yLevel = subchunkNBT.getByte("Y");
+            ExtendedBlockStorage subchunk = new ExtendedBlockStorage(yLevel << 4, !chunk.worldObj.provider.hasNoSky);
+            DataRegistryImpl.readSubchunkFromNBT(chunk, subchunk, subchunkNBT);
 
-            ebs.removeInvalidBlocks();
-            ebsList[yLevel] = ebs;
+            subchunk.removeInvalidBlocks();
+            subchunkList[yLevel] = subchunk;
         }
 
-        chunk.setStorageArrays(ebsList);
+        chunk.setStorageArrays(subchunkList);
     }
 
     private void writeCustomData(Chunk chunk, NBTTagCompound nbt) {
-        ChunkDataRegistryImpl.writeChunkToNBT(chunk, nbt);
+        DataRegistryImpl.writeChunkToNBT(chunk, nbt);
     }
 
-    private void writeSections(Chunk chunk, NBTTagCompound nbt) {
-        ExtendedBlockStorage[] ebsList = chunk.getBlockStorageArray();
-        NBTTagList sections = new NBTTagList();
-        NBTTagCompound section;
+    private void writeSubchunks(Chunk chunk, NBTTagCompound nbt) {
+        ExtendedBlockStorage[] subchunks = chunk.getBlockStorageArray();
+        NBTTagList subchunksNBT = new NBTTagList();
+        NBTTagCompound subchunkNBT;
 
-        for (ExtendedBlockStorage ebs : ebsList) {
-            if (ebs != null) {
-                section = new NBTTagCompound();
-                section.setByte("Y", (byte) (ebs.getYLocation() >> 4 & 255));
-                ChunkDataRegistryImpl.writeSectionToNBT(chunk, ebs, section);
-                sections.appendTag(section);
+        for (ExtendedBlockStorage subchunk : subchunks) {
+            if (subchunk != null) {
+                subchunkNBT = new NBTTagCompound();
+                subchunkNBT.setByte("Y", (byte) (subchunk.getYLocation() >> 4 & 255));
+                DataRegistryImpl.writeSubchunkToNBT(chunk, subchunk, subchunkNBT);
+                subchunksNBT.appendTag(subchunkNBT);
             }
         }
 
-        nbt.setTag("Sections", sections);
+        nbt.setTag("Sections", subchunksNBT);
     }
 
     private void writeEntities(Chunk chunk, World world, NBTTagCompound nbt) {

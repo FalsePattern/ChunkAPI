@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.internal.vanilla;
 
-import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.DataManager;
 import com.falsepattern.chunk.api.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ import net.minecraft.world.chunk.Chunk;
 import java.nio.ByteBuffer;
 
 public class BiomeManager extends VanillaManager
-        implements ChunkDataManager.PacketDataManager, ChunkDataManager.ChunkNBTDataManager {
+        implements DataManager.PacketDataManager, DataManager.ChunkDataManager {
     public static final int BYTES_PER_CHUNK = 256;
 
     @Override
@@ -31,14 +31,14 @@ public class BiomeManager extends VanillaManager
     }
 
     @Override
-    public void writeToBuffer(@NotNull Chunk chunk, int ebsMask, boolean forceUpdate, @NotNull ByteBuffer data) {
+    public void writeToBuffer(@NotNull Chunk chunk, int subchunkMask, boolean forceUpdate, @NotNull ByteBuffer data) {
         if (forceUpdate) {
             data.put(chunk.getBiomeArray());
         }
     }
 
     @Override
-    public void readFromBuffer(@NotNull Chunk chunk, int ebsMask, boolean forceUpdate, @NotNull ByteBuffer buffer) {
+    public void readFromBuffer(@NotNull Chunk chunk, int subchunkMask, boolean forceUpdate, @NotNull ByteBuffer buffer) {
         if (forceUpdate) {
             buffer.get(chunk.getBiomeArray());
         }

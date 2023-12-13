@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.internal.vanilla;
 
-import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.DataManager;
 import com.falsepattern.chunk.api.ArrayUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,10 +15,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
-public class BlocklightManager extends NibbleManager implements ChunkDataManager.SectionNBTDataManager {
+public class BlocklightManager extends NibbleManager implements DataManager.SubchunkDataManager {
     @Override
-    protected NibbleArray getNibbleArray(ExtendedBlockStorage ebs) {
-        return ebs.getBlocklightArray();
+    protected NibbleArray getNibbleArray(ExtendedBlockStorage subchunk) {
+        return subchunk.getBlocklightArray();
     }
 
     @Override
@@ -27,22 +27,22 @@ public class BlocklightManager extends NibbleManager implements ChunkDataManager
     }
 
     @Override
-    public boolean sectionPrivilegedAccess() {
+    public boolean subchunkPrivilegedAccess() {
         return true;
     }
 
     @Override
-    public void writeSectionToNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
-        section.setByteArray("BlockLight", ebs.getBlocklightArray().data);
+    public void writeSubchunkToNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
+        nbt.setByteArray("BlockLight", subchunk.getBlocklightArray().data);
     }
 
     @Override
-    public void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
-        ebs.setBlocklightArray(new NibbleArray(section.getByteArray("BlockLight"), 4));
+    public void readSubchunkFromNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
+        subchunk.setBlocklightArray(new NibbleArray(nbt.getByteArray("BlockLight"), 4));
     }
 
     @Override
-    public void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+    public void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         from.setBlocklightArray(ArrayUtil.copyArray(from.getBlocklightArray(), to.getBlocklightArray()));
     }
 }

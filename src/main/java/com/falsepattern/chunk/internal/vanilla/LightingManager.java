@@ -7,13 +7,13 @@
 
 package com.falsepattern.chunk.internal.vanilla;
 
-import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.DataManager;
 import com.falsepattern.chunk.api.ArrayUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
 
-public class LightingManager extends VanillaManager implements ChunkDataManager.ChunkNBTDataManager {
+public class LightingManager extends VanillaManager implements DataManager.ChunkDataManager {
     @Override
     public String id() {
         return "lighting";

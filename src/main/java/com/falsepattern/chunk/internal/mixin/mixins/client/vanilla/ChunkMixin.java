@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.internal.mixin.mixins.client.vanilla;
 
-import com.falsepattern.chunk.internal.ChunkDataRegistryImpl;
+import com.falsepattern.chunk.internal.DataRegistryImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -53,7 +53,7 @@ public abstract class ChunkMixin {
      */
     @SideOnly(Side.CLIENT)
     @Overwrite
-    public void fillChunk(byte[] data, int ebsMask, int ebsMSBMask, boolean forceUpdate) {
+    public void fillChunk(byte[] data, int subchunkMask, int subchunkMSBMask, boolean forceUpdate) {
         for (Object o : chunkTileEntityMap.values()) {
             TileEntity tileEntity = (TileEntity) o;
             tileEntity.updateContainingBlockInfo();
@@ -64,7 +64,7 @@ public abstract class ChunkMixin {
         boolean hasSky = !this.worldObj.provider.hasNoSky;
 
         for (int i = 0; i < storageArrays.length; i++) {
-            if ((ebsMask & (1 << i)) != 0) {
+            if ((subchunkMask & (1 << i)) != 0) {
                 if (storageArrays[i] == null) {
                     storageArrays[i] = new ExtendedBlockStorage(i << 4, hasSky);
                 }
@@ -73,10 +73,10 @@ public abstract class ChunkMixin {
             }
         }
 
-        ChunkDataRegistryImpl.readFromBuffer((Chunk) (Object) this, ebsMask, forceUpdate, data);
+        DataRegistryImpl.readFromBuffer((Chunk) (Object) this, subchunkMask, forceUpdate, data);
 
         for (int i = 0; i < storageArrays.length; ++i) {
-            if ((storageArrays[i] != null) && ((ebsMask & (1 << i)) != 0)) {
+            if ((storageArrays[i] != null) && ((subchunkMask & (1 << i)) != 0)) {
                 storageArrays[i].removeInvalidBlocks();
             }
         }

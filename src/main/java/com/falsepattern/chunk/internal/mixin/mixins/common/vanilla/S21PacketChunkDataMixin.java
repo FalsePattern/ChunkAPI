@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
 
-import com.falsepattern.chunk.internal.ChunkDataRegistryImpl;
+import com.falsepattern.chunk.internal.DataRegistryImpl;
 import lombok.val;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -37,7 +37,7 @@ public abstract class S21PacketChunkDataMixin {
     @Shadow(aliases = "field_149282_b")
     private int zPosition;
     @Shadow(aliases = "field_149283_c")
-    private int ebsMask;
+    private int subchunkMask;
     @Shadow(aliases = "field_149281_e")
     private byte[] deflatedData;
     @Shadow(aliases = "field_149278_f")
@@ -51,7 +51,7 @@ public abstract class S21PacketChunkDataMixin {
                     constant = @Constant(intValue = 196864),
                     require = 1)
     private static int increasePacketSize(int constant) {
-        return ChunkDataRegistryImpl.maxPacketSize();
+        return DataRegistryImpl.maxPacketSize();
     }
 
     /**
@@ -59,25 +59,25 @@ public abstract class S21PacketChunkDataMixin {
      * @reason Replace functionality
      */
     @Overwrite
-    public static S21PacketChunkData.Extracted func_149269_a(Chunk chunk, boolean forceUpdate, int ebsMask) {
-        ExtendedBlockStorage[] ebs = chunk.getBlockStorageArray();
+    public static S21PacketChunkData.Extracted func_149269_a(Chunk chunk, boolean forceUpdate, int subchunkMask) {
+        ExtendedBlockStorage[] subchunks = chunk.getBlockStorageArray();
         S21PacketChunkData.Extracted extracted = new S21PacketChunkData.Extracted();
 
-        if (buffer.length < ChunkDataRegistryImpl.maxPacketSize()) {
-            buffer = new byte[ChunkDataRegistryImpl.maxPacketSize()];
+        if (buffer.length < DataRegistryImpl.maxPacketSize()) {
+            buffer = new byte[DataRegistryImpl.maxPacketSize()];
         }
 
         if (forceUpdate) {
             chunk.sendUpdates = true;
         }
 
-        for (int i = 0; i < ebs.length; ++i) {
-            if (ebs[i] != null && (!forceUpdate || !ebs[i].isEmpty()) && (ebsMask & 1 << i) != 0) {
+        for (int i = 0; i < subchunks.length; ++i) {
+            if (subchunks[i] != null && (!forceUpdate || !subchunks[i].isEmpty()) && (subchunkMask & 1 << i) != 0) {
                 extracted.field_150280_b |= 1 << i;
             }
         }
 
-        int length = ChunkDataRegistryImpl.writeToBuffer(chunk, extracted.field_150280_b, forceUpdate, buffer);
+        int length = DataRegistryImpl.writeToBuffer(chunk, extracted.field_150280_b, forceUpdate, buffer);
 
         extracted.field_150282_a = new byte[length];
         System.arraycopy(buffer, 0, extracted.field_150282_a, 0, length);
@@ -106,7 +106,7 @@ public abstract class S21PacketChunkDataMixin {
         data.writeInt(xPosition);
         data.writeInt(zPosition);
         data.writeBoolean(forceUpdate);
-        data.writeShort((short) (ebsMask & 0xFFFF));
+        data.writeShort((short) (subchunkMask & 0xFFFF));
         data.writeInt(this.data.length);
         data.writeInt(deflatedSize);
         data.writeBytes(deflatedData, 0, deflatedSize);
@@ -121,7 +121,7 @@ public abstract class S21PacketChunkDataMixin {
         xPosition = data.readInt();
         zPosition = data.readInt();
         forceUpdate = data.readBoolean();
-        ebsMask = data.readShort() & 0xFFFF;
+        subchunkMask = data.readShort() & 0xFFFF;
         this.data = new byte[data.readInt()];
         deflatedSize = data.readInt();
         if (buffer.length < deflatedSize) {

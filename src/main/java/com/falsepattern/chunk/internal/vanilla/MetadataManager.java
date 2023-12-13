@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.internal.vanilla;
 
-import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.DataManager;
 import com.falsepattern.chunk.api.ArrayUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,10 +15,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
-public class MetadataManager extends NibbleManager implements ChunkDataManager.SectionNBTDataManager {
+public class MetadataManager extends NibbleManager implements DataManager.SubchunkDataManager {
     @Override
-    protected NibbleArray getNibbleArray(ExtendedBlockStorage ebs) {
-        return ebs.getMetadataArray();
+    protected NibbleArray getNibbleArray(ExtendedBlockStorage subchunk) {
+        return subchunk.getMetadataArray();
     }
 
     @Override
@@ -27,22 +27,22 @@ public class MetadataManager extends NibbleManager implements ChunkDataManager.S
     }
 
     @Override
-    public boolean sectionPrivilegedAccess() {
+    public boolean subchunkPrivilegedAccess() {
         return true;
     }
 
     @Override
-    public void writeSectionToNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
-        section.setByteArray("Data", ebs.getMetadataArray().data);
+    public void writeSubchunkToNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
+        nbt.setByteArray("Data", subchunk.getMetadataArray().data);
     }
 
     @Override
-    public void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
-        ebs.setBlockMetadataArray(new NibbleArray(section.getByteArray("Data"), 4));
+    public void readSubchunkFromNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
+        subchunk.setBlockMetadataArray(new NibbleArray(nbt.getByteArray("Data"), 4));
     }
 
     @Override
-    public void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+    public void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         to.setBlockMetadataArray(ArrayUtil.copyArray(from.getMetadataArray(), to.getMetadataArray()));
     }
 }

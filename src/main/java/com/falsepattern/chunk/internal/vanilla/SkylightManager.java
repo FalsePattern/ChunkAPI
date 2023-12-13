@@ -7,7 +7,7 @@
 
 package com.falsepattern.chunk.internal.vanilla;
 
-import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.DataManager;
 import com.falsepattern.chunk.api.ArrayUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,54 +17,54 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import java.nio.ByteBuffer;
 
-public class SkylightManager extends NibbleManager implements ChunkDataManager.SectionNBTDataManager {
+public class SkylightManager extends NibbleManager implements DataManager.SubchunkDataManager {
     @Override
     public String id() {
         return "skylight";
     }
 
     @Override
-    protected NibbleArray getNibbleArray(ExtendedBlockStorage ebs) {
-        return ebs.getSkylightArray();
+    protected NibbleArray getNibbleArray(ExtendedBlockStorage subchunk) {
+        return subchunk.getSkylightArray();
     }
 
     @Override
-    public void writeToBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, ByteBuffer data) {
+    public void writeToBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer data) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            super.writeToBuffer(chunk, ebsMask, forceUpdate, data);
+            super.writeToBuffer(chunk, subchunkMask, forceUpdate, data);
         }
     }
 
     @Override
-    public void readFromBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, ByteBuffer buffer) {
+    public void readFromBuffer(Chunk chunk, int subchunkMask, boolean forceUpdate, ByteBuffer buffer) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            super.readFromBuffer(chunk, ebsMask, forceUpdate, buffer);
+            super.readFromBuffer(chunk, subchunkMask, forceUpdate, buffer);
         }
     }
 
     @Override
-    public boolean sectionPrivilegedAccess() {
+    public boolean subchunkPrivilegedAccess() {
         return true;
     }
 
     @Override
-    public void writeSectionToNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
+    public void writeSubchunkToNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            section.setByteArray("SkyLight", ebs.getSkylightArray().data);
+            nbt.setByteArray("SkyLight", subchunk.getSkylightArray().data);
         } else {
-            section.setByteArray("SkyLight", new byte[ebs.getBlocklightArray().data.length]);
+            nbt.setByteArray("SkyLight", new byte[subchunk.getBlocklightArray().data.length]);
         }
     }
 
     @Override
-    public void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
+    public void readSubchunkFromNBT(Chunk chunk, ExtendedBlockStorage subchunk, NBTTagCompound nbt) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            ebs.setSkylightArray(new NibbleArray(section.getByteArray("SkyLight"), 4));
+            subchunk.setSkylightArray(new NibbleArray(nbt.getByteArray("SkyLight"), 4));
         }
     }
 
     @Override
-    public void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+    public void cloneSubchunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         if (!fromChunk.worldObj.provider.hasNoSky) {
             to.setSkylightArray(ArrayUtil.copyArray(from.getSkylightArray(), to.getSkylightArray()));
         } else {
