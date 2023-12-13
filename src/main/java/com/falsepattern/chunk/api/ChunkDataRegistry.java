@@ -9,11 +9,16 @@ package com.falsepattern.chunk.api;
 
 import com.falsepattern.chunk.internal.ChunkDataRegistryImpl;
 import com.falsepattern.lib.StableAPI;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
+
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import java.util.Set;
 
 /**
- * This class is used to register ChunkDataManagers.
+ * This class is used to register ChunkDataManagers, as well as dispatch clone requests.
  *
  * @since 0.1.0
  * @see ChunkDataManager
@@ -52,8 +57,33 @@ public class ChunkDataRegistry {
      * Returns an unmodifiable set of all registered ChunkDataManagers.
      * The id of a manager is its domain and id separated by a colon. (domain:id)
      */
+    @Contract(pure = true)
     @StableAPI.Expose
-    public static Set<String> getRegisteredManagers() {
+    public static @Unmodifiable Set<String> getRegisteredManagers() {
         return ChunkDataRegistryImpl.getRegisteredManagers();
+    }
+
+    /**
+     * Copies chunk-level data from a source chunk to a target chunk.
+     * DOES NOT copy data contained inside its ExtendedBlockStorage instances!!
+     * @param from The chunk to read the data from
+     * @param to The chunk to write the data to
+     */
+    @Contract(mutates = "param2")
+    @StableAPI.Expose(since = "0.5.0")
+    public static void clone(Chunk from, Chunk to) {
+        ChunkDataRegistryImpl.cloneChunk(from, to);
+    }
+
+    /**
+     * Copies data from a source subchunk to a target subchunk.
+     * @param fromChunk The chunk that owns the *from* subchunk. Used by data managers for getting metadata about the world (skylight presence, etc.)
+     * @param from The subchunk to read the data from
+     * @param to The subchunk to write the data to
+     */
+    @Contract(mutates = "param3")
+    @StableAPI.Expose(since = "0.5.0")
+    public static void clone(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+        ChunkDataRegistryImpl.cloneSection(fromChunk, from, to);
     }
 }

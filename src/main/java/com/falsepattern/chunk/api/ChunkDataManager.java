@@ -8,6 +8,7 @@
 package com.falsepattern.chunk.api;
 
 import com.falsepattern.lib.StableAPI;
+import lombok.val;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,6 +73,7 @@ public interface ChunkDataManager {
          *
          * @param chunk The chunk to serialize.
          */
+        @Contract(mutates = "param1,param4")
         @StableAPI.Expose
         void writeToBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, ByteBuffer data);
 
@@ -82,6 +84,7 @@ public interface ChunkDataManager {
          * @param chunk  The chunk to deserialize.
          * @param buffer The packet buffer to read from.
          */
+        @Contract(mutates = "param1,param4")
         @StableAPI.Expose
         void readFromBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, ByteBuffer buffer);
     }
@@ -155,6 +158,7 @@ public interface ChunkDataManager {
         /**
          * Serializes your data into an NBT tag. This is used when saving the chunk to disk.
          */
+        @Contract(mutates = "param2")
         @StableAPI.Expose
         void writeChunkToNBT(Chunk chunk, NBTTagCompound nbt);
 
@@ -165,8 +169,23 @@ public interface ChunkDataManager {
          * (e.g., loading save before the mod was added), and the manager is not {@link #chunkPrivilegedAccess() privileged}.
          * In this case, you should initialize the data to a sane default.
          */
+        @Contract(mutates = "param1")
         @StableAPI.Expose
         void readChunkFromNBT(Chunk chunk, NBTTagCompound nbt);
+
+        /**
+         * Directly copies data from one chunk to another chunk.
+         * @param from The chunk to copy data from.
+         * @param to The chunk to copy data to.
+         * @implNote The default implementation uses a very inefficient method of serialize->deserialize, so this should be overridden if possible.
+         */
+        @Contract(mutates = "param2")
+        @StableAPI.Expose(since = "0.5.0")
+        default void cloneChunk(Chunk from, Chunk to) {
+            val tmp = new NBTTagCompound();
+            writeChunkToNBT(from, tmp);
+            readChunkFromNBT(to, tmp);
+        }
     }
 
     /**
@@ -196,6 +215,7 @@ public interface ChunkDataManager {
         /**
          * Serializes your data into an NBT tag. This is used when saving the chunk to disk.
          */
+        @Contract(mutates = "param3")
         @StableAPI.Expose
         void writeSectionToNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section);
 
@@ -205,7 +225,23 @@ public interface ChunkDataManager {
          * (e.g., loading save before the mod was added), and the manager is not {@link #sectionPrivilegedAccess() privileged}.
          * In this case, you should initialize the data to a sane default.
          */
+        @Contract(mutates = "param2")
         @StableAPI.Expose
         void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section);
+
+        /**
+         * Directly copies data from one section to another section.
+         * @param fromChunk The owner of the section to copy data from.
+         * @param from The section to copy data from.
+         * @param to The section to copy data to.
+         * @implNote The default implementation uses a very inefficient method of serialize->deserialize, so this should be overridden if possible.
+         */
+        @Contract(mutates = "param3")
+        @StableAPI.Expose(since = "0.5.0")
+        default void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+            val tmp = new NBTTagCompound();
+            writeSectionToNBT(fromChunk, from, tmp);
+            readSectionFromNBT(fromChunk, to, tmp);
+        }
     }
 }

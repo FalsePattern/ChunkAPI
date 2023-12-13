@@ -8,6 +8,7 @@
 package com.falsepattern.chunk.internal.vanilla;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.ArrayUtil;
 import lombok.val;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -102,5 +103,11 @@ public class BlockIDManager extends VanillaManager
         if (section.hasKey("Add", 7)) {
             ebs.setBlockMSBArray(new NibbleArray(section.getByteArray("Add"), 4));
         }
+    }
+
+    @Override
+    public void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+        to.setBlockLSBArray(ArrayUtil.copyArray(from.getBlockLSBArray(), to.getBlockLSBArray()));
+        to.setBlockMSBArray(ArrayUtil.copyArray(from.getBlockMSBArray(), to.getBlockMSBArray()));
     }
 }

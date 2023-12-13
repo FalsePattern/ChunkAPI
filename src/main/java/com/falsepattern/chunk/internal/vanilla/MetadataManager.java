@@ -8,6 +8,7 @@
 package com.falsepattern.chunk.internal.vanilla;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.ArrayUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
@@ -38,5 +39,10 @@ public class MetadataManager extends NibbleManager implements ChunkDataManager.S
     @Override
     public void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
         ebs.setBlockMetadataArray(new NibbleArray(section.getByteArray("Data"), 4));
+    }
+
+    @Override
+    public void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+        to.setBlockMetadataArray(ArrayUtil.copyArray(from.getMetadataArray(), to.getMetadataArray()));
     }
 }

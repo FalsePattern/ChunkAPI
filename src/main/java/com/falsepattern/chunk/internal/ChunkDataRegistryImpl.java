@@ -238,6 +238,18 @@ public class ChunkDataRegistryImpl {
         }
     }
 
+    public static void cloneChunk(Chunk from, Chunk to) {
+        for (val manager: chunkNBTManagers.values()) {
+            manager.cloneChunk(from, to);
+        }
+    }
+
+    public static void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+        for (val manager: sectionNBTManagers.values()) {
+            manager.cloneSection(fromChunk, from, to);
+        }
+    }
+
     public static Set<String> getRegisteredManagers() {
         return Collections.unmodifiableSet(managers);
     }

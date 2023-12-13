@@ -8,6 +8,7 @@
 package com.falsepattern.chunk.internal.vanilla;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -59,5 +60,10 @@ public class BiomeManager extends VanillaManager
         if (nbt.hasKey("Biomes", 7)) {
             chunk.setBiomeArray(nbt.getByteArray("Biomes"));
         }
+    }
+
+    @Override
+    public void cloneChunk(Chunk from, Chunk to) {
+        to.setBiomeArray(ArrayUtil.copyArray(from.getBiomeArray(), to.getBiomeArray()));
     }
 }

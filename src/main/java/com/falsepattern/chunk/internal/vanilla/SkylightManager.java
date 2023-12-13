@@ -8,6 +8,7 @@
 package com.falsepattern.chunk.internal.vanilla;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.ArrayUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
@@ -59,6 +60,15 @@ public class SkylightManager extends NibbleManager implements ChunkDataManager.S
     public void readSectionFromNBT(Chunk chunk, ExtendedBlockStorage ebs, NBTTagCompound section) {
         if (!chunk.worldObj.provider.hasNoSky) {
             ebs.setSkylightArray(new NibbleArray(section.getByteArray("SkyLight"), 4));
+        }
+    }
+
+    @Override
+    public void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+        if (!fromChunk.worldObj.provider.hasNoSky) {
+            to.setSkylightArray(ArrayUtil.copyArray(from.getSkylightArray(), to.getSkylightArray()));
+        } else {
+            to.setSkylightArray(null);
         }
     }
 }

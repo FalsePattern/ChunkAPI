@@ -8,6 +8,7 @@
 package com.falsepattern.chunk.internal.vanilla;
 
 import com.falsepattern.chunk.api.ChunkDataManager;
+import com.falsepattern.chunk.api.ArrayUtil;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.chunk.Chunk;
@@ -33,5 +34,11 @@ public class LightingManager extends VanillaManager implements ChunkDataManager.
     @Override
     public boolean chunkPrivilegedAccess() {
         return true;
+    }
+
+    @Override
+    public void cloneChunk(Chunk from, Chunk to) {
+        to.heightMap = ArrayUtil.copyArray(from.heightMap, to.heightMap);
+        to.isLightPopulated = from.isLightPopulated;
     }
 }
