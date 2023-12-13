@@ -71,7 +71,7 @@ public class ChunkDataRegistry {
      */
     @Contract(mutates = "param2")
     @StableAPI.Expose(since = "0.5.0")
-    public static void clone(Chunk from, Chunk to) {
+    public static void cloneChunk(Chunk from, Chunk to) {
         ChunkDataRegistryImpl.cloneChunk(from, to);
     }
 
@@ -83,7 +83,7 @@ public class ChunkDataRegistry {
      */
     @Contract(mutates = "param3")
     @StableAPI.Expose(since = "0.5.0")
-    public static void clone(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
+    public static void cloneSection(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         ChunkDataRegistryImpl.cloneSection(fromChunk, from, to);
     }
 }

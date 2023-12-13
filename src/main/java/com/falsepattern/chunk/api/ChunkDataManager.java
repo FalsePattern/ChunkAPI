@@ -73,7 +73,7 @@ public interface ChunkDataManager {
          *
          * @param chunk The chunk to serialize.
          */
-        @Contract(mutates = "param1,param4")
+        @Contract(mutates = "param4")
         @StableAPI.Expose
         void writeToBuffer(Chunk chunk, int ebsMask, boolean forceUpdate, ByteBuffer data);
 

@@ -8,6 +8,7 @@
 package com.falsepattern.chunk.api;
 
 import com.falsepattern.lib.StableAPI;
+import org.jetbrains.annotations.Contract;
 
 import net.minecraft.world.chunk.NibbleArray;
 
@@ -18,6 +19,9 @@ import java.util.Arrays;
  */
 @StableAPI(since = "0.5.0")
 public class ArrayUtil {
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static boolean[] copyArray(boolean[] src, boolean[] dst) {
         if (src == null)
             return null;
@@ -27,6 +31,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static byte[] copyArray(byte[] src, byte[] dst) {
         if (src == null)
             return null;
@@ -36,6 +43,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static char[] copyArray(char[] src, char[] dst) {
         if (src == null)
             return null;
@@ -45,6 +55,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static short[] copyArray(short[] src, short[] dst) {
         if (src == null)
             return null;
@@ -54,6 +67,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static int[] copyArray(int[] src, int[] dst) {
         if (src == null)
             return null;
@@ -63,6 +79,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static long[] copyArray(long[] src, long[] dst) {
         if (src == null)
             return null;
@@ -72,6 +91,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static float[] copyArray(float[] src, float[] dst) {
         if (src == null)
             return null;
@@ -81,6 +103,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static double[] copyArray(double[] src, double[] dst) {
         if (src == null)
             return null;
@@ -90,6 +115,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static <T> T[] copyArray(T[] src, T[] dst) {
         if (src == null)
             return null;
@@ -99,6 +127,9 @@ public class ArrayUtil {
         return dst;
     }
 
+    @Contract(value = "null, _ -> null;" +
+                      "!null, null -> new;",
+              mutates = "param2")
     public static NibbleArray copyArray(NibbleArray srcArray, NibbleArray dstArray) {
         if (srcArray == null) {
             return null;
