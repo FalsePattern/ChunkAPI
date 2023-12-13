@@ -47,10 +47,13 @@ public abstract class S21PacketChunkDataMixin {
     @Shadow(aliases = "field_149285_h")
     private int deflatedSize;
 
-    @ModifyConstant(method = {"<clinit>", "func_149275_c"},
-                    constant = @Constant(intValue = 196864),
-                    require = 1)
-    private static int increasePacketSize(int constant) {
+
+    /**
+     * @author FalsePattern
+     * @reason Extend capacity
+     */
+    @Overwrite
+    public static int func_149275_c() {
         return DataRegistryImpl.maxPacketSize();
     }
 
