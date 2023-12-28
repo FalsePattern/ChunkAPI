@@ -19,6 +19,8 @@ import java.util.Arrays;
  */
 @StableAPI(since = "0.5.0")
 public class ArrayUtil {
+
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -31,6 +33,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -43,6 +46,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -55,6 +59,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -67,6 +72,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -79,6 +85,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -91,6 +98,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -103,6 +111,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -115,6 +124,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -127,6 +137,7 @@ public class ArrayUtil {
         return dst;
     }
 
+    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
