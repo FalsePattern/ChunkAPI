@@ -181,6 +181,7 @@ public interface DataManager {
          * @param to The chunk to copy data to.
          */
         @Contract(mutates = "param2")
+        @StableAPI.Expose
         void cloneChunk(Chunk from, Chunk to);
     }
 
@@ -232,6 +233,7 @@ public interface DataManager {
          * @param to The subChunk to copy data to.
          */
         @Contract(mutates = "param3")
+        @StableAPI.Expose
         void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to);
     }
 }
