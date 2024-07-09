@@ -383,7 +383,7 @@ public class DataRegistryImpl {
     public static void writeLevelDat(NBTTagCompound tag) {
         val managers = new NBTTagCompound();
         tag.setTag("managers", managers);
-        tag.setString("version", Tags.VERSION);
+        tag.setString("version", Tags.MOD_VERSION);
         for (val manager: NBTManagers.entrySet()) {
             val name = manager.getKey();
             if (name.startsWith("minecraft:"))

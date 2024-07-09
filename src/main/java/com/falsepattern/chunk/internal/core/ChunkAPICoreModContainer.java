@@ -50,11 +50,11 @@ public class ChunkAPICoreModContainer extends DummyModContainer implements World
 
     private static ModMetadata createMetadata() {
         val meta = new ModMetadata();
-        meta.modId = Tags.MODID + "core";
-        meta.name = Tags.MODNAME + " Core";
-        meta.version = Tags.VERSION;
-        meta.dependencies.add(new DefaultArtifactVersion(Tags.MODID, Tags.VERSION));
-        meta.parent = Tags.MODID;
+        meta.modId = Tags.MOD_ID + "core";
+        meta.name = Tags.MOD_NAME + " Core";
+        meta.version = Tags.MOD_VERSION;
+        meta.dependencies.add(new DefaultArtifactVersion(Tags.MOD_ID, Tags.MOD_VERSION));
+        meta.parent = Tags.MOD_ID;
         return meta;
     }
 

@@ -28,10 +28,6 @@ minecraft_fp {
 
     tokens {
         tokenClass = "internal.Tags"
-        modid = "MODID"
-        name = "MODNAME"
-        version = "VERSION"
-        rootPkg = "GROUPNAME"
     }
 
     publish {

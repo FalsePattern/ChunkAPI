@@ -37,9 +37,9 @@ import com.falsepattern.chunk.internal.vanilla.SkylightManager;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 
-@Mod(modid = Tags.MODID,
-     version = Tags.VERSION,
-     name = Tags.MODNAME,
+@Mod(modid = Tags.MOD_ID,
+     version = Tags.MOD_VERSION,
+     name = Tags.MOD_NAME,
      acceptedMinecraftVersions = "[1.7.10]",
      dependencies = "required-after:falsepatternlib@[1.2.0,);")
 public class ChunkAPI {

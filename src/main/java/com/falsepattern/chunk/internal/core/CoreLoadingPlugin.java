@@ -32,7 +32,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 import java.util.Map;
 
-@IFMLLoadingPlugin.TransformerExclusions(Tags.GROUPNAME + ".internal.core")
+@IFMLLoadingPlugin.TransformerExclusions(Tags.ROOT_PKG + ".internal.core")
 public class CoreLoadingPlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
@@ -41,7 +41,7 @@ public class CoreLoadingPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String getModContainerClass() {
-        return Tags.GROUPNAME + ".internal.core.ChunkAPICoreModContainer";
+        return Tags.ROOT_PKG + ".internal.core.ChunkAPICoreModContainer";
     }
 
     @Override
