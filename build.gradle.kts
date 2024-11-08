@@ -1,6 +1,5 @@
-import com.falsepattern.fpgradle.dsl.*
 plugins {
-    id("fpgradle-minecraft") version("0.3.5")
+    id("fpgradle-minecraft") version("0.8.2")
 }
 
 group = "com.falsepattern"
@@ -52,11 +51,9 @@ minecraft_fp {
 }
 
 repositories {
-    exclusiveMaven("mavenpattern", uri("https://mvn.falsepattern.com/releases/")) {
-        includeGroup("com.falsepattern")
-    }
+    exclusive(maven("mavenpattern", "https://mvn.falsepattern.com/releases/"), "com.falsepattern")
 }
 
 dependencies {
-    apiSplit("com.falsepattern:falsepatternlib-mc1.7.10:1.2.5")
+    apiSplit("com.falsepattern:falsepatternlib-mc1.7.10:1.4.4")
 }
