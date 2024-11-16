@@ -47,13 +47,13 @@ public abstract class NibbleManager extends VanillaManager implements DataManage
     }
 
     @Override
-    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer data) {
+    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer) {
         val subChunks = chunk.getBlockStorageArray();
         for (int i = 0; i < subChunks.length; i++) {
             if ((subChunkMask & (1 << i)) != 0) {
                 val subChunk = subChunks[i];
                 if (subChunk != null) {
-                    data.put(getNibbleArray(subChunk).data, 0, BYTES_PER_SUBCHUNK);
+                    buffer.put(getNibbleArray(subChunk).data, 0, BYTES_PER_SUBCHUNK);
                 }
             }
         }

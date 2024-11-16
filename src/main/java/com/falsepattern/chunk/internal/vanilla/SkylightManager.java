@@ -48,9 +48,9 @@ public class SkylightManager extends NibbleManager implements DataManager.SubChu
     }
 
     @Override
-    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer data) {
+    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer) {
         if (!chunk.worldObj.provider.hasNoSky) {
-            super.writeToBuffer(chunk, subChunkMask, forceUpdate, data);
+            super.writeToBuffer(chunk, subChunkMask, forceUpdate, buffer);
         }
     }
 

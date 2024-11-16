@@ -50,9 +50,9 @@ public class BiomeManager extends VanillaManager
     }
 
     @Override
-    public void writeToBuffer(@NotNull Chunk chunk, int subChunkMask, boolean forceUpdate, @NotNull ByteBuffer data) {
+    public void writeToBuffer(@NotNull Chunk chunk, int subChunkMask, boolean forceUpdate, @NotNull ByteBuffer buffer) {
         if (forceUpdate) {
-            data.put(chunk.getBiomeArray());
+            buffer.put(chunk.getBiomeArray());
         }
     }
 

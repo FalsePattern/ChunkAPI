@@ -33,6 +33,8 @@ import lombok.var;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.util.Constants;
@@ -55,6 +57,7 @@ import java.util.stream.Collectors;
 public class DataRegistryImpl {
     private static final Set<String> managers = new HashSet<>();
     private static final Map<String, PacketManagerInfo> packetManagers = new HashMap<>();
+    private static final Map<String, DataManager.BlockPacketDataManager> blockPacketManagers = new HashMap<>();
     private static final Map<String, DataManager.StorageDataManager> NBTManagers = new HashMap<>();
     private static final Map<String, DataManager.ChunkDataManager> chunkNBTManagers = new HashMap<>();
     private static final Map<String, DataManager.SubChunkDataManager> subChunkNBTManagers = new HashMap<>();
@@ -90,6 +93,10 @@ public class DataRegistryImpl {
             maxPacketSize += 4 + id.getBytes(StandardCharsets.UTF_8).length + 4 + maxSize;
             packetManagers.put(id, new PacketManagerInfo(maxSize, packetManager));
         }
+        if (manager instanceof DataManager.BlockPacketDataManager) {
+            val blockPacketManager = (DataManager.BlockPacketDataManager) manager;
+            blockPacketManagers.put(id, blockPacketManager);
+        }
         if (manager instanceof DataManager.StorageDataManager) {
             NBTManagers.put(id, (DataManager.StorageDataManager) manager);
             if (manager instanceof DataManager.ChunkDataManager) {
@@ -116,6 +123,7 @@ public class DataRegistryImpl {
                 val removed = packetManagers.remove(manager);
                 maxPacketSize -= 4 + id.getBytes(StandardCharsets.UTF_8).length + 4 + removed.maxPacketSize;
             }
+            blockPacketManagers.remove(manager);
             chunkNBTManagers.remove(manager);
             subChunkNBTManagers.remove(manager);
             NBTManagers.remove(manager);
@@ -181,6 +189,37 @@ public class DataRegistryImpl {
             buf.position(start + length);
         }
         return buf.position();
+    }
+
+    public static void writeBlockToPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet) {
+        for (val manager: blockPacketManagers.values()) {
+            manager.writeBlockToPacket(chunk, x, y, z, packet);
+        }
+    }
+
+    public static void readBlockFromPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet) {
+        for (val manager: blockPacketManagers.values()) {
+            manager.readBlockFromPacket(chunk, x, y, z, packet);
+        }
+    }
+
+    public static void writeBlockPacketToBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
+        buffer.writeInt(blockPacketManagers.size());
+        for (val pair: blockPacketManagers.entrySet()) {
+            val id = pair.getKey();
+            val manager = pair.getValue();
+            buffer.writeStringToBuffer(id);
+            manager.writeBlockPacketToBuffer(packet, buffer);
+        }
+    }
+
+    public static void readBlockPacketFromBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
+        int count = buffer.readInt();
+        for (int i = 0; i < count; i++) {
+            val id = buffer.readStringFromBuffer(1024);
+            val manager = blockPacketManagers.get(id);
+            manager.readBlockPacketFromBuffer(packet, buffer);
+        }
     }
 
     private static ByteBuffer createSlice(ByteBuffer buffer, int start, int length) {

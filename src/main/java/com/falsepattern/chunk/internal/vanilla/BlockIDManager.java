@@ -30,18 +30,25 @@ import com.falsepattern.chunk.api.ArrayUtil;
 import com.falsepattern.chunk.api.DataManager;
 import lombok.val;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static com.falsepattern.chunk.internal.Common.BLOCKS_PER_SUBCHUNK;
 import static com.falsepattern.chunk.internal.Common.SUBCHUNKS_PER_CHUNK;
 
 public class BlockIDManager extends VanillaManager
-        implements DataManager.PacketDataManager, DataManager.SubChunkDataManager {
+        implements
+        DataManager.PacketDataManager,
+        DataManager.BlockPacketDataManager,
+        DataManager.SubChunkDataManager {
     private static final int LSB_BYTES_PER_SUBCHUNK = BLOCKS_PER_SUBCHUNK;
     private static final int MSB_BYTES_PER_SUBCHUNK = BLOCKS_PER_SUBCHUNK / 2;
     private static final int HEADER_SIZE = 2;
@@ -57,27 +64,27 @@ public class BlockIDManager extends VanillaManager
     }
 
     @Override
-    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer data) {
+    public void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer) {
         val subChunks = chunk.getBlockStorageArray();
-        int currentPos = data.position();
-        data.putShort((short) 0);
+        int currentPos = buffer.position();
+        buffer.putShort((short) 0);
         int msbMask = 0;
         for (int i = 0; i < subChunks.length; i++) {
             if ((subChunkMask & (1 << i)) != 0) {
                 val subChunk = subChunks[i];
                 val lsb = subChunk.getBlockLSBArray();
                 val msb = subChunk.getBlockMSBArray();
-                data.put(lsb);
+                buffer.put(lsb);
                 if (msb != null) {
                     msbMask |= 1 << i;
-                    data.put(msb.data);
+                    buffer.put(msb.data);
                 }
             }
         }
-        int endPos = data.position();
-        data.position(currentPos);
-        data.putShort((short) msbMask);
-        data.position(endPos);
+        int endPos = buffer.position();
+        buffer.position(currentPos);
+        buffer.putShort((short) msbMask);
+        buffer.position(endPos);
     }
 
     @Override
@@ -128,5 +135,28 @@ public class BlockIDManager extends VanillaManager
     public void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         to.setBlockLSBArray(ArrayUtil.copyArray(from.getBlockLSBArray(), to.getBlockLSBArray()));
         to.setBlockMSBArray(ArrayUtil.copyArray(from.getBlockMSBArray(), to.getBlockMSBArray()));
+    }
+
+    @Override
+    public void writeBlockToPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet) {
+    }
+
+    @Override
+    public void readBlockFromPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet) {
+
+    }
+
+    @Override
+    public void writeBlockPacketToBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
+        buffer.writeShort((short)((Block.getIdFromBlock(packet.field_148883_d) & 0xFFF) << 4 | packet.field_148884_e & 0xF));
+    }
+
+    @Override
+    public void readBlockPacketFromBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
+        int packed = buffer.readUnsignedShort();
+        int id = (packed >> 4) & 0xFFF;
+        int meta = packed & 0xF;
+        packet.field_148883_d = Block.getBlockById(id);
+        packet.field_148884_e = meta;
     }
 }

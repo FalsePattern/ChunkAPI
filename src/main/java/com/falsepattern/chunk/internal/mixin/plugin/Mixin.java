@@ -40,10 +40,14 @@ import static com.falsepattern.lib.mixin.IMixin.PredicateHelpers.always;
 public enum Mixin implements IMixin {
     // @formatter:off
     AnvilChunkLoaderMixin(Side.COMMON, always(), "vanilla.AnvilChunkLoaderMixin"),
+    PlayerInstanceMixin(Side.COMMON, always(), "vanilla.PlayerInstanceMixin"),
     S21PacketChunkDataMixin(Side.COMMON, always(), "vanilla.S21PacketChunkDataMixin"),
+    S22PacketMultiBlockChangeMixin(Side.COMMON, always(), "vanilla.S22PacketMultiBlockChangeMixin"),
+    S23PacketBlockChangeMixin(Side.COMMON, always(), "vanilla.S23PacketBlockChangeMixin"),
     S26PacketMapChunkBulkMixin(Side.COMMON, always(), "vanilla.S26PacketMapChunkBulkMixin"),
 
     ChunkMixin(Side.CLIENT, always(), "vanilla.ChunkMixin"),
+    NetHandlerPlayClientMixin(Side.CLIENT, always(), "vanilla.NetHandlerPlayClientMixin"),
     ;
     // @formatter:on
 

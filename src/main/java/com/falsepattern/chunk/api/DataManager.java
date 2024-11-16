@@ -32,9 +32,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
@@ -95,11 +98,10 @@ public interface DataManager {
          */
         @Contract(mutates = "param4")
         @StableAPI.Expose
-        void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer data);
+        void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer);
 
         /**
          * Deserializes your data from a packet.
-         * Mutates this object.
          *
          * @param chunk  The chunk to deserialize.
          * @param buffer The packet buffer to read from.
@@ -107,6 +109,39 @@ public interface DataManager {
         @Contract(mutates = "param1,param4")
         @StableAPI.Expose
         void readFromBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer);
+    }
+
+    /**
+     * Implement this interface if you additionally want to synchronize your data on single and multi-block updates,
+     * not just chunk updates.
+     *
+     * @since TODO
+     * @author FalsePattern
+     * @version TODO
+     */
+    @StableAPI(since = "TODO")
+    interface BlockPacketDataManager extends DataManager {
+        @Contract(mutates = "param1")
+        @StableAPI.Expose
+        void writeBlockToPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet);
+
+        @Contract(mutates = "param1,param5")
+        @StableAPI.Expose
+        void readBlockFromPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet);
+
+        /**
+         * Serializes your block data into a buffer.
+         */
+        @Contract(mutates = "param2")
+        @StableAPI.Expose
+        void writeBlockPacketToBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException;
+
+        /**
+         * Deserializes your block data from a buffer.
+         */
+        @Contract(mutates = "param1,param2")
+        @StableAPI.Expose
+        void readBlockPacketFromBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException;
     }
 
     /**
