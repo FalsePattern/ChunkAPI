@@ -148,15 +148,11 @@ public class BlockIDManager extends VanillaManager
 
     @Override
     public void writeBlockPacketToBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
-        buffer.writeShort((short)((Block.getIdFromBlock(packet.field_148883_d) & 0xFFF) << 4 | packet.field_148884_e & 0xF));
+        buffer.writeShort(Block.getIdFromBlock(packet.field_148883_d) & 0xFFF);
     }
 
     @Override
     public void readBlockPacketFromBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
-        int packed = buffer.readUnsignedShort();
-        int id = (packed >> 4) & 0xFFF;
-        int meta = packed & 0xF;
-        packet.field_148883_d = Block.getBlockById(id);
-        packet.field_148884_e = meta;
+        packet.field_148883_d = Block.getBlockById(buffer.readUnsignedShort() & 0xFFF);
     }
 }

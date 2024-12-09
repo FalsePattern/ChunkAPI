@@ -30,11 +30,17 @@ import com.falsepattern.chunk.api.ArrayUtil;
 import com.falsepattern.chunk.api.DataManager;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
-public class MetadataManager extends NibbleManager implements DataManager.SubChunkDataManager {
+import java.io.IOException;
+
+public class MetadataManager extends NibbleManager implements
+        DataManager.BlockPacketDataManager,
+        DataManager.SubChunkDataManager {
     @Override
     protected NibbleArray getNibbleArray(ExtendedBlockStorage subChunk) {
         return subChunk.getMetadataArray();
@@ -63,5 +69,23 @@ public class MetadataManager extends NibbleManager implements DataManager.SubChu
     @Override
     public void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         to.setBlockMetadataArray(ArrayUtil.copyArray(from.getMetadataArray(), to.getMetadataArray()));
+    }
+
+    @Override
+    public void writeBlockToPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet) {
+    }
+
+    @Override
+    public void readBlockFromPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet) {
+    }
+
+    @Override
+    public void writeBlockPacketToBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
+        buffer.writeByte(packet.field_148884_e & 0xF);
+    }
+
+    @Override
+    public void readBlockPacketFromBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
+        packet.field_148884_e = buffer.readUnsignedByte() & 0xF;
     }
 }
