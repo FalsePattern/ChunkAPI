@@ -55,5 +55,5 @@ repositories {
 }
 
 dependencies {
-    apiSplit("com.falsepattern:falsepatternlib-mc1.7.10:1.4.4")
+    apiSplit("com.falsepattern:falsepatternlib-mc1.7.10:1.5.4")
 }
