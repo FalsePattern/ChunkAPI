@@ -115,11 +115,11 @@ public interface DataManager {
      * Implement this interface if you additionally want to synchronize your data on single and multi-block updates,
      * not just chunk updates.
      *
-     * @since TODO
+     * @since 0.6.0
      * @author FalsePattern
-     * @version TODO
+     * @version 0.6.0
      */
-    @StableAPI(since = "TODO")
+    @StableAPI(since = "0.6.0")
     interface BlockPacketDataManager extends DataManager {
         @Contract(mutates = "param1")
         @StableAPI.Expose
