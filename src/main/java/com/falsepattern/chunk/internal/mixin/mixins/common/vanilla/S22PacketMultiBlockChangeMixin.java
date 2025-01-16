@@ -30,9 +30,11 @@ public abstract class S22PacketMultiBlockChangeMixin implements CustomPacketMult
 
     private S23PacketBlockChange[] subPackets;
 
+    @SuppressWarnings("DefaultAnnotationParam")
     @Inject(method = "<init>(I[SLnet/minecraft/world/chunk/Chunk;)V",
             at = @At(value = "FIELD",
-                     target = "Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;field_148925_b:Lnet/minecraft/world/ChunkCoordIntPair;"),
+                     target = "Lnet/minecraft/network/play/server/S22PacketMultiBlockChange;field_148925_b:Lnet/minecraft/world/ChunkCoordIntPair;",
+                     unsafe = true),
             require = 1)
     private void suppressConstructor(int p_i45181_1_, short[] crammedPositions, Chunk chunk, CallbackInfo ci) {
         throw new IllegalStateException(
