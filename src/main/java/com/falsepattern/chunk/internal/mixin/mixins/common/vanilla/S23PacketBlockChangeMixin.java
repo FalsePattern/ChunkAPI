@@ -47,11 +47,14 @@ import java.io.IOException;
 
 @Mixin(S23PacketBlockChange.class)
 public abstract class S23PacketBlockChangeMixin implements CustomPacketBlockChange {
-    @Shadow(aliases = "field_148887_a")
+    @Shadow(aliases = "field_148887_a",
+            remap = false)
     private int xCoord;
-    @Shadow(aliases = "field_148885_b")
+    @Shadow(aliases = "field_148885_b",
+            remap = false)
     private int yCoord;
-    @Shadow(aliases = "field_148886_c")
+    @Shadow(aliases = "field_148886_c",
+            remap = false)
     private int zCoord;
 
     @Shadow public Block field_148883_d;

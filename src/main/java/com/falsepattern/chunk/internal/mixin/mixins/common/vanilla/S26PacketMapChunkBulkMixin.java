@@ -41,28 +41,37 @@ import java.util.zip.Inflater;
 
 @Mixin(S26PacketMapChunkBulk.class)
 public abstract class S26PacketMapChunkBulkMixin {
-    @Shadow(aliases = "field_149268_i")
+    @Shadow(aliases = "field_149268_i",
+            remap = false)
     private static byte[] inflaterBuffer;
-    @Shadow(aliases = "field_149263_e")
+    @Shadow(aliases = "field_149263_e",
+            remap = false)
     private byte[] deflatedData;
-    @Shadow
+    @Shadow(remap = false)
     private Semaphore deflateGate;
-    @Shadow(aliases = "field_149266_a")
+    @Shadow(aliases = "field_149266_a",
+            remap = false)
     private int[] xPositions;
-    @Shadow(aliases = "field_149264_b")
+    @Shadow(aliases = "field_149264_b",
+            remap = false)
     private int[] zPositions;
-    @Shadow(aliases = "field_149265_c")
+    @Shadow(aliases = "field_149265_c",
+            remap = false)
     private int[] subChunkMasks;
-    @Shadow(aliases = "field_149262_d")
+    @Shadow(aliases = "field_149262_d",
+            remap = false)
     private int[] subChunkMSBMasks;
-    @Shadow(aliases = "field_149261_g")
+    @Shadow(aliases = "field_149261_g",
+            remap = false)
     private int deflatedSize;
-    @Shadow(aliases = "field_149267_h")
+    @Shadow(aliases = "field_149267_h",
+            remap = false)
     private boolean skylight;
-    @Shadow(aliases = "field_149260_f")
+    @Shadow(aliases = "field_149260_f",
+            remap = false)
     private byte[][] datas;
 
-    @Shadow
+    @Shadow(remap = false)
     protected abstract void deflate();
 
     /**

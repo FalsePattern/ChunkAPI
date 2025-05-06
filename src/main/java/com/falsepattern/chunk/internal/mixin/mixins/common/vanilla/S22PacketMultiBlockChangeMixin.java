@@ -50,7 +50,8 @@ import java.io.IOException;
 
 @Mixin(S22PacketMultiBlockChange.class)
 public abstract class S22PacketMultiBlockChangeMixin implements CustomPacketMultiBlockChange {
-    @Shadow(aliases = "field_148925_b")
+    @Shadow(aliases = "field_148925_b",
+            remap = false)
     private ChunkCoordIntPair coord;
 
     private S23PacketBlockChange[] subPackets;

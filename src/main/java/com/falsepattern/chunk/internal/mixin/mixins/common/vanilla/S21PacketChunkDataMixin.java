@@ -44,24 +44,35 @@ import java.util.zip.Inflater;
 @Mixin(S21PacketChunkData.class)
 public abstract class S21PacketChunkDataMixin {
 
-    @Shadow(aliases = "field_149286_i")
+    @Shadow(aliases = "field_149286_i",
+            remap = false)
     private static byte[] buffer;
-    @Shadow
+    @Shadow(remap = false)
     private Semaphore deflateGate;
-    @Shadow(aliases = "field_149284_a")
+    @Shadow(aliases = "field_149284_a",
+            remap = false)
     private int xPosition;
-    @Shadow(aliases = "field_149282_b")
+    @Shadow(aliases = "field_149282_b",
+            remap = false)
     private int zPosition;
-    @Shadow(aliases = "field_149283_c")
+    @Shadow(aliases = "field_149283_c",
+            remap = false)
     private int subChunkMask;
-    @Shadow(aliases = "field_149281_e")
+    @Shadow(aliases = "field_149281_e",
+            remap = false)
     private byte[] deflatedData;
-    @Shadow(aliases = "field_149278_f")
+    @Shadow(aliases = "field_149278_f",
+            remap = false)
     private byte[] data;
-    @Shadow(aliases = "field_149279_g")
+    @Shadow(aliases = "field_149279_g",
+            remap = false)
     private boolean forceUpdate;
-    @Shadow(aliases = "field_149285_h")
+    @Shadow(aliases = "field_149285_h",
+            remap = false)
     private int deflatedSize;
+
+    @Shadow(remap = false)
+    protected abstract void deflate();
 
 
     /**
@@ -102,9 +113,6 @@ public abstract class S21PacketChunkDataMixin {
         System.arraycopy(buffer, 0, extracted.field_150282_a, 0, length);
         return extracted;
     }
-
-    @Shadow
-    protected abstract void deflate();
 
     /**
      * @author FalsePattern
