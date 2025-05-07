@@ -1,7 +1,8 @@
 # ChunkAPI
+
 <a rel="license" href="https://www.gnu.org/licenses/agpl-3.0.en.html"><img alt="AGPLv3 logo" style="border-width:0" src="https://www.gnu.org/graphics/agplv3-with-text-162x68.png" /></a>
 ## Author: FalsePattern
-## License: GNU AGPLv3.0 with additional permissions (see below, or in the LICENSE file)
+## License: GNU AGPLv3.0-only with additional permissions (see below, or in the LICENSE file)
 
 Summary
 -------
