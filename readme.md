@@ -12,18 +12,19 @@ A mod for adding custom data to chunks without the hassle of writing custom pack
 License
 -------
 
-ChunkAPI is designed with players in mind, and as such, it uses slightly aggressive licensing to make sure that third
-party developers cannot break your worlds in an irrecoverable way by changing huge parts of the API.
+The mod itself is fully licensed under the GNU Affero General Public License, version 3.0, with several
+additional permissions according to Section 7 of the AGPL to make it compatible with Minecraft, while at the same
+time protecting your save files from getting corrupted by broken commits.
 
-For this reason, the mod itself is fully licensed under the GNU Affero General Public License, version 3.0 or later,
-with several additional permissions according to Section 7 of the AGPL.
+You can find these permissions in the full [LICENSE](LICENSE) file. (TL;DR: Yes, you can use ChunkAPI in a modpack
+without getting trapped by AGPL's viral licensing).
 
-You can find these permissions in the full [LICENSE](LICENSE) file. (TL;DR: Yes, you can use official releases of
-ChunkAPI in a modpack without getting trapped by AGPL's requirements).
+The additional permissions help ensure that no matter what fork of this mod you use, your saves are going to be
+fully compatible, and your worlds don't get trapped in an abandoned fork of the mod with a different save file format
+that cannot be loaded by any other fork.
 
-Note that while these limitations might seem unnecessary, it is essential for protecting your saves from getting
-"trapped" in a random fork of ChunkAPI without any way to recover to vanilla or the official release of ChunkAPI
-without world corruption, in case no suitable backups are available.
+Note that forks of this mod may have bugfixes that the original mod does not, so you should only swap different forks'
+releases of this mod if you know how those bugfixes affect the other mods you're using it with.
 
 Goals
 -----
