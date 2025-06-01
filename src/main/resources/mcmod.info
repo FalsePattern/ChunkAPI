@@ -5,7 +5,7 @@
     "description": "Chunk data, simplified.",
     "version": "${modVersion}",
     "mcversion": "${minecraftVersion}",
-    "url": "https://github.com/FalsePattern/ChunkAPI",
+    "url": "https://github.com/LegacyModdingMC/ChunkAPI",
     "updateUrl": "",
     "authorList": [
       "FalsePattern"
