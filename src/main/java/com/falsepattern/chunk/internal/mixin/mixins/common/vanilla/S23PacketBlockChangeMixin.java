@@ -1,26 +1,23 @@
 /*
  * ChunkAPI
  *
- * Copyright (C) 2023-2025 FalsePattern
+ * Copyright (C) 2023-2025 FalsePattern, The MEGA Team, LegacyModdingMC contributors
  * All Rights Reserved
  *
- * The above copyright notice and this permission notice
- * shall be included in all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, only version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
- * This program comes with additional permissions according to Section 7 of the
- * GNU Affero General Public License. See the full LICENSE file for details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
@@ -28,7 +25,6 @@ package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
 import com.falsepattern.chunk.internal.BlockPosUtil;
 import com.falsepattern.chunk.internal.DataRegistryImpl;
 import com.falsepattern.chunk.internal.impl.CustomPacketBlockChange;
-import lombok.SneakyThrows;
 import lombok.val;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -57,9 +53,11 @@ public abstract class S23PacketBlockChangeMixin implements CustomPacketBlockChan
             remap = false)
     private int zCoord;
 
-    @Shadow public Block field_148883_d;
+    @Shadow
+    public Block field_148883_d;
 
-    @Shadow public int field_148884_e;
+    @Shadow
+    public int field_148884_e;
 
     @Override
     public void chunkapi$init(int x, int y, int z, Chunk chunk) {

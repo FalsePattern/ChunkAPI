@@ -10,8 +10,8 @@
     "authorList": [
       "FalsePattern"
     ],
-    "credits": "",
-    "logoFile": "",
+    "credits": "Logo by Houstonruss. Initial API feedback by the MEGA team.",
+    "logoFile": "chunkapi.png",
     "screenshots": [],
     "dependencies": []
   }

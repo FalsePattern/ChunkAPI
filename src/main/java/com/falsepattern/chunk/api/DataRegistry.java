@@ -1,26 +1,23 @@
 /*
  * ChunkAPI
  *
- * Copyright (C) 2023-2025 FalsePattern
+ * Copyright (C) 2023-2025 FalsePattern, The MEGA Team, LegacyModdingMC contributors
  * All Rights Reserved
  *
- * The above copyright notice and this permission notice
- * shall be included in all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, only version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
- * This program comes with additional permissions according to Section 7 of the
- * GNU Affero General Public License. See the full LICENSE file for details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.falsepattern.chunk.api;
@@ -40,10 +37,10 @@ import java.util.Set;
  * <p>
  * This class is used to register ChunkDataManagers, as well as dispatch clone requests.
  *
- * @since 0.5.0
- * @see DataManager
  * @author FalsePattern
  * @version 0.5.0
+ * @see DataManager
+ * @since 0.5.0
  */
 @StableAPI(since = "0.5.0")
 public class DataRegistry {
@@ -56,8 +53,7 @@ public class DataRegistry {
      * @throws IllegalArgumentException If the manager has a duplicate id.
      */
     @StableAPI.Expose
-    public static void registerDataManager(DataManager manager)
-            throws IllegalStateException, IllegalArgumentException {
+    public static void registerDataManager(DataManager manager) throws IllegalStateException, IllegalArgumentException {
         DataRegistryImpl.registerDataManager(manager);
     }
 
@@ -86,8 +82,9 @@ public class DataRegistry {
     /**
      * Copies chunk-level data from a source chunk to a target chunk.
      * DOES NOT copy data contained inside its ExtendedBlockStorage instances!!
+     *
      * @param from The chunk to read the data from
-     * @param to The chunk to write the data to
+     * @param to   The chunk to write the data to
      */
     @Contract(mutates = "param2")
     @StableAPI.Expose(since = "0.5.0")
@@ -97,9 +94,10 @@ public class DataRegistry {
 
     /**
      * Copies data from a source subChunk to a target subChunk.
+     *
      * @param fromChunk The chunk that owns the *from* subChunk. Used by data managers for getting metadata about the world (skylight presence, etc.)
-     * @param from The subChunk to read the data from
-     * @param to The subChunk to write the data to
+     * @param from      The subChunk to read the data from
+     * @param to        The subChunk to write the data to
      */
     @Contract(mutates = "param3")
     @StableAPI.Expose(since = "0.5.0")

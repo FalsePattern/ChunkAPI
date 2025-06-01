@@ -1,26 +1,23 @@
 /*
  * ChunkAPI
  *
- * Copyright (C) 2023-2025 FalsePattern
+ * Copyright (C) 2023-2025 FalsePattern, The MEGA Team, LegacyModdingMC contributors
  * All Rights Reserved
  *
- * The above copyright notice and this permission notice
- * shall be included in all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, only version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
- * This program comes with additional permissions according to Section 7 of the
- * GNU Affero General Public License. See the full LICENSE file for details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.falsepattern.chunk.internal;
@@ -69,11 +66,9 @@ public class DataRegistryImpl {
         public final DataManager.PacketDataManager manager;
     }
 
-    public static void registerDataManager(DataManager manager)
-            throws IllegalStateException, IllegalArgumentException {
+    public static void registerDataManager(DataManager manager) throws IllegalStateException, IllegalArgumentException {
         if (Loader.instance().getLoaderState() != LoaderState.INITIALIZATION) {
-            throw new IllegalStateException("ChunkDataManager registration is not allowed at this time! " +
-                                            "Please register your ChunkDataManager in the init phase.");
+            throw new IllegalStateException("ChunkDataManager registration is not allowed at this time! Please register your ChunkDataManager in the init phase.");
         }
         var id = manager.domain() + ":" + manager.id();
         if (managers.contains(id)) {
@@ -109,11 +104,10 @@ public class DataRegistryImpl {
 
     public static void disableDataManager(String domain, String id) {
         if (Loader.instance().getLoaderState() != LoaderState.POSTINITIALIZATION) {
-            throw new IllegalStateException("ChunkDataManager disabling is not allowed at this time! " +
-                                            "Please disable any ChunkDataManagers in the postInit phase.");
+            throw new IllegalStateException("ChunkDataManager disabling is not allowed at this time! Please disable any ChunkDataManagers in the postInit phase.");
         }
-        Common.LOG.debug("Disabling ChunkDataManager " + id + " in domain " + domain +
-                        ". See the stacktrace for the source of this event.\nThis is NOT an error.", new Throwable());
+        Common.LOG.debug("Disabling ChunkDataManager " + id + " in domain " + domain + ". See the stacktrace for the source of this event.\nThis is NOT an error.",
+                         new Throwable());
         val manager = domain + ":" + id;
         //Remove the manager from the list of managers, if it exists
         if (managers.remove(manager)) {
@@ -191,20 +185,20 @@ public class DataRegistryImpl {
     }
 
     public static void writeBlockToPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet) {
-        for (val manager: blockPacketManagers.values()) {
+        for (val manager : blockPacketManagers.values()) {
             manager.writeBlockToPacket(chunk, x, y, z, packet);
         }
     }
 
     public static void readBlockFromPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet) {
-        for (val manager: blockPacketManagers.values()) {
+        for (val manager : blockPacketManagers.values()) {
             manager.readBlockFromPacket(chunk, x, y, z, packet);
         }
     }
 
     public static void writeBlockPacketToBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
         buffer.writeInt(blockPacketManagers.size());
-        for (val pair: blockPacketManagers.entrySet()) {
+        for (val pair : blockPacketManagers.entrySet()) {
             val id = pair.getKey();
             val manager = pair.getValue();
             buffer.writeStringToBuffer(id);
@@ -271,15 +265,13 @@ public class DataRegistryImpl {
 
     public static void writeSubChunkToNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
         for (val manager : subChunkNBTManagers.values()) {
-            manager.writeSubChunkToNBT(chunk, subChunk,
-                                       createManagerNBT(manager.subChunkPrivilegedAccess(), nbt, manager));
+            manager.writeSubChunkToNBT(chunk, subChunk, createManagerNBT(manager.subChunkPrivilegedAccess(), nbt, manager));
         }
     }
 
     public static void readSubChunkFromNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt) {
         for (val manager : subChunkNBTManagers.values()) {
-            manager.readSubChunkFromNBT(chunk, subChunk,
-                                        getManagerNBT(manager.subChunkPrivilegedAccess(), nbt, manager));
+            manager.readSubChunkFromNBT(chunk, subChunk, getManagerNBT(manager.subChunkPrivilegedAccess(), nbt, manager));
         }
     }
 
@@ -296,13 +288,13 @@ public class DataRegistryImpl {
     }
 
     public static void cloneChunk(Chunk from, Chunk to) {
-        for (val manager: chunkNBTManagers.values()) {
+        for (val manager : chunkNBTManagers.values()) {
             manager.cloneChunk(from, to);
         }
     }
 
     public static void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
-        for (val manager: subChunkNBTManagers.values()) {
+        for (val manager : subChunkNBTManagers.values()) {
             manager.cloneSubChunk(fromChunk, from, to);
         }
     }
@@ -328,21 +320,25 @@ public class DataRegistryImpl {
             }
             triggerScreen = true;
         }
-        if (triggerScreen)
+        if (triggerScreen) {
             builder.append("ChunkAPI will attempt to load the world, but it is possible that chunks might get corrupted.\n" +
                            "Read the following text carefully, and make sure you understand the risks before continuing.\n\n");
-        if (managerCompat != null)
+        }
+        if (managerCompat != null) {
             builder.append(managerCompat);
+        }
 
         if (triggerScreen) {
             builder.append("\nA world backup will be automatically created in your saves directory.\n\n");
             boolean confirmed = StartupQuery.confirm(builder.toString());
-            if (!confirmed) StartupQuery.abort();
+            if (!confirmed) {
+                StartupQuery.abort();
+            }
 
             try {
                 ZipperUtil.backupWorld();
             } catch (IOException e) {
-                StartupQuery.notify("The world backup couldn't be created.\n\n"+e);
+                StartupQuery.notify("The world backup couldn't be created.\n\n" + e);
                 StartupQuery.abort();
             }
         }
@@ -360,13 +356,15 @@ public class DataRegistryImpl {
             for (val manager : removedManagers) {
                 val saveManager = saveManagers.get(manager);
                 builder.append(manager);
-                if (saveManager.version != null)
+                if (saveManager.version != null) {
                     builder.append(' ').append(saveManager.version);
+                }
                 builder.append("\nUninstall information: ");
-                if (saveManager.uninstallMessage != null)
+                if (saveManager.uninstallMessage != null) {
                     builder.append(saveManager.getUninstallMessage());
-                else
+                } else {
                     builder.append("No uninstall information available.");
+                }
                 builder.append('\n');
             }
         }
@@ -378,19 +376,20 @@ public class DataRegistryImpl {
         if (!addedManagers.isEmpty()) {
             compatWarning = true;
             builder.append("\nThe following data managers have been newly added:\n");
-            for (val manager: addedManagers) {
+            for (val manager : addedManagers) {
                 val addedManager = NBTManagers.get(manager);
-                if (addedManager == null)
+                if (addedManager == null) {
                     continue;
-                builder.append(manager)
-                              .append(' ').append(addedManager.version()).append('\n');
+                }
+                builder.append(manager).append(' ').append(addedManager.version()).append('\n');
                 val installMessage = addedManager.newInstallDescription();
-                if (installMessage != null)
+                if (installMessage != null) {
                     builder.append("Install information: ").append(addedManager.newInstallDescription()).append('\n');
+                }
             }
         }
         boolean changePrompt = false;
-        for (val savedManager: saveManagers.entrySet()) {
+        for (val savedManager : saveManagers.entrySet()) {
             val managerName = savedManager.getKey();
             if (NBTManagers.containsKey(managerName)) {
                 val manager = savedManager.getValue();
@@ -402,30 +401,26 @@ public class DataRegistryImpl {
                         builder.append("\nThe following data managers have changed versions in an incompatible way:\n");
                         changePrompt = true;
                     }
-                    builder.append(managerName)
-                                  .append(" has changed versions from ")
-                                  .append(manager.version)
-                                  .append(" to ")
-                                  .append(currentManager.version())
-                                  .append(".\n");
+                    builder.append(managerName).append(" has changed versions from ").append(manager.version).append(" to ").append(currentManager.version()).append(".\n");
                     builder.append("Upgrade information: ").append(extraMessage).append('\n');
                 }
             }
         }
-        if (!compatWarning)
+        if (!compatWarning) {
             return null;
-        return "The following managers have changed:\n" +
-               builder;
+        }
+        return "The following managers have changed:\n" + builder;
     }
 
     public static void writeLevelDat(NBTTagCompound tag) {
         val managers = new NBTTagCompound();
         tag.setTag("managers", managers);
         tag.setString("version", Tags.MOD_VERSION);
-        for (val manager: NBTManagers.entrySet()) {
+        for (val manager : NBTManagers.entrySet()) {
             val name = manager.getKey();
-            if (name.startsWith("minecraft:"))
+            if (name.startsWith("minecraft:")) {
                 continue;
+            }
             val value = manager.getValue();
             managers.setTag(name, SaveManagerInfo.fromManager(value).toNBT());
         }
@@ -433,11 +428,15 @@ public class DataRegistryImpl {
 
     private static Map<String, SaveManagerInfo> readManagers(NBTTagCompound tag) {
         val managers = new HashMap<String, SaveManagerInfo>();
-        if (!tag.hasKey("managers")) return managers;
-        if (tag.func_150299_b("managers") != Constants.NBT.TAG_COMPOUND ) return managers;
+        if (!tag.hasKey("managers")) {
+            return managers;
+        }
+        if (tag.func_150299_b("managers") != Constants.NBT.TAG_COMPOUND) {
+            return managers;
+        }
         val managerTag = tag.getCompoundTag("managers");
         //noinspection unchecked
-        for (val key : (Set<String>)managerTag.func_150296_c()) {
+        for (val key : managerTag.func_150296_c()) {
             managers.put(key, SaveManagerInfo.fromNBT(managerTag.getCompoundTag(key)));
         }
         return managers;
@@ -452,10 +451,12 @@ public class DataRegistryImpl {
 
         public NBTTagCompound toNBT() {
             val tag = new NBTTagCompound();
-            if (version != null)
+            if (version != null) {
                 tag.setString("version", version);
-            if (uninstallMessage != null)
+            }
+            if (uninstallMessage != null) {
                 tag.setString("uninstallMessage", uninstallMessage);
+            }
             return tag;
         }
 

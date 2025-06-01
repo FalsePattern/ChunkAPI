@@ -1,26 +1,23 @@
 /*
  * ChunkAPI
  *
- * Copyright (C) 2023-2025 FalsePattern
+ * Copyright (C) 2023-2025 FalsePattern, The MEGA Team, LegacyModdingMC contributors
  * All Rights Reserved
  *
- * The above copyright notice and this permission notice
- * shall be included in all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, only version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
- * This program comes with additional permissions according to Section 7 of the
- * GNU Affero General Public License. See the full LICENSE file for details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.falsepattern.chunk.api;
@@ -45,10 +42,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static boolean[] copyArray(boolean[] src, boolean[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }
@@ -58,10 +57,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static byte[] copyArray(byte[] src, byte[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }
@@ -71,10 +72,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static char[] copyArray(char[] src, char[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }
@@ -84,10 +87,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static short[] copyArray(short[] src, short[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }
@@ -97,10 +102,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static int[] copyArray(int[] src, int[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }
@@ -110,10 +117,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static long[] copyArray(long[] src, long[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }
@@ -123,10 +132,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static float[] copyArray(float[] src, float[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }
@@ -136,10 +147,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static double[] copyArray(double[] src, double[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }
@@ -149,10 +162,12 @@ public class ArrayUtil {
                       "!null, null -> new;",
               mutates = "param2")
     public static <T> T[] copyArray(T[] src, T[] dst) {
-        if (src == null)
+        if (src == null) {
             return null;
-        if (dst == null || src.length != dst.length)
+        }
+        if (dst == null || src.length != dst.length) {
             return Arrays.copyOf(src, src.length);
+        }
         System.arraycopy(src, 0, dst, 0, src.length);
         return dst;
     }

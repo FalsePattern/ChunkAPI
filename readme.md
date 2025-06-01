@@ -1,30 +1,15 @@
-# ChunkAPI
+# ChunkAPI <img src="src/main/resources/chunkapi.png" align="right" width=150>
 
-<a rel="license" href="https://www.gnu.org/licenses/agpl-3.0.en.html"><img alt="AGPLv3 logo" style="border-width:0" src="https://www.gnu.org/graphics/agplv3-with-text-162x68.png" /></a>
-## Author: FalsePattern
-## License: GNU AGPLv3.0-only with additional permissions (see below, or in the LICENSE file)
+<sup>**[CurseForge](https://www.curseforge.com/minecraft/mc-mods/chunkapi) | [Modrinth](https://modrinth.com/mod/chunkapi)**</sup>
 
-Summary
--------
+A mod for adding custom data to chunks without the hassle of writing custom packets, event handling,
+loading hooks, and more.
 
-A mod for adding custom data to chunks without the hassle of writing custom packets, event handling, loading hooks, and more.
+### Licensed under the LGPLv3 license
 
-License
--------
+### Originally developed by FalsePattern
 
-The mod itself is fully licensed under the GNU Affero General Public License, version 3.0, with several
-additional permissions according to Section 7 of the AGPL to make it compatible with Minecraft, while at the same
-time protecting your save files from getting corrupted by broken commits.
-
-You can find these permissions in the full [LICENSE](LICENSE) file. (TL;DR: Yes, you can use ChunkAPI in a modpack
-without getting trapped by AGPL's viral licensing).
-
-The additional permissions help ensure that no matter what fork of this mod you use, your saves are going to be
-fully compatible, and your worlds don't get trapped in an abandoned fork of the mod with a different save file format
-that cannot be loaded by any other fork.
-
-Note that forks of this mod may have bugfixes that the original mod does not, so you should only swap different forks'
-releases of this mod if you know how those bugfixes affect the other mods you're using it with.
+### Mod logo by Houstonruss
 
 Goals
 -----
@@ -52,6 +37,8 @@ to modify any of the vanilla classes yourself.
 
 API and spec
 -----------
+
+<!-- TODO update -->
 
 The API exposes a way to add custom data to chunks, and a way to register custom serializers for the data.
 
@@ -130,4 +117,5 @@ Manager data:
 Dependencies
 ------------
 
-This mod directly depends on FalsePatternLib, and some sort of Mixin injector that provides SpongePowered Mixin >= 0.8.5.
+[FalsePatternLib](https://github.com/Falsepattern/FalsePatternLib)
+[UniMixins](https://github.com/LegacyModdingMC/UniMixins)

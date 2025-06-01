@@ -1,26 +1,23 @@
 /*
  * ChunkAPI
  *
- * Copyright (C) 2023-2025 FalsePattern
+ * Copyright (C) 2023-2025 FalsePattern, The MEGA Team, LegacyModdingMC contributors
  * All Rights Reserved
  *
- * The above copyright notice and this permission notice
- * shall be included in all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, only version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
- * This program comes with additional permissions according to Section 7 of the
- * GNU Affero General Public License. See the full LICENSE file for details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
@@ -28,8 +25,6 @@ package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
 import com.falsepattern.chunk.internal.DataRegistryImpl;
 import com.falsepattern.chunk.internal.impl.CustomPacketBlockChange;
 import com.falsepattern.chunk.internal.impl.CustomPacketMultiBlockChange;
-import io.netty.buffer.AbstractByteBuf;
-import io.netty.buffer.Unpooled;
 import lombok.val;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -39,12 +34,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S22PacketMultiBlockChange;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.chunk.Chunk;
-import cpw.mods.fml.common.network.ByteBufUtils;
 
 import java.io.IOException;
 
@@ -63,8 +56,7 @@ public abstract class S22PacketMultiBlockChangeMixin implements CustomPacketMult
                      unsafe = true),
             require = 1)
     private void suppressConstructor(int p_i45181_1_, short[] crammedPositions, Chunk chunk, CallbackInfo ci) {
-        throw new IllegalStateException(
-                "S22PacketMultiBlockChange constructor is not supported by ChunkAPI. Please report this to FalsePattern!");
+        throw new IllegalStateException("S22PacketMultiBlockChange constructor is not supported by ChunkAPI. Please report this to FalsePattern!");
     }
 
     @Override
@@ -123,9 +115,7 @@ public abstract class S22PacketMultiBlockChangeMixin implements CustomPacketMult
             data.writeVarIntToBuffer(subPackets.length);
             for (val subPacket : subPackets) {
                 val cSub = (CustomPacketBlockChange) subPacket;
-                int pos = ((cSub.chunkapi$x() & 0xf) << 12) |
-                          ((cSub.chunkapi$z() & 0xf) << 8) |
-                          (cSub.chunkapi$y() & 0xff);
+                int pos = ((cSub.chunkapi$x() & 0xf) << 12) | ((cSub.chunkapi$z() & 0xf) << 8) | (cSub.chunkapi$y() & 0xff);
                 data.writeShort(pos);
                 DataRegistryImpl.writeBlockPacketToBuffer(subPacket, data);
             }

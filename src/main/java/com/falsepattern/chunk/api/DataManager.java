@@ -1,26 +1,23 @@
 /*
  * ChunkAPI
  *
- * Copyright (C) 2023-2025 FalsePattern
+ * Copyright (C) 2023-2025 FalsePattern, The MEGA Team, LegacyModdingMC contributors
  * All Rights Reserved
  *
- * The above copyright notice and this permission notice
- * shall be included in all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, only version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- *
- * This program comes with additional permissions according to Section 7 of the
- * GNU Affero General Public License. See the full LICENSE file for details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.falsepattern.chunk.api;
@@ -46,13 +43,13 @@ import java.nio.ByteBuffer;
  * managers. For the actual networking and data storage, see the internal interfaces of this interface.
  * Note: This interface does nothing by itself, you also need to implement one or more of the internal interfaces.
  *
- * @since 0.5.0
+ * @author FalsePattern
+ * @version 0.5.0
  * @see PacketDataManager
  * @see ChunkDataManager
  * @see SubChunkDataManager
  * @see DataRegistry
- * @author FalsePattern
- * @version 0.5.0
+ * @since 0.5.0
  */
 @StableAPI(since = "0.5.0")
 public interface DataManager {
@@ -74,9 +71,9 @@ public interface DataManager {
     /**
      * Implement this interface if you want to synchronize your data with the client.
      *
-     * @since 0.5.0
      * @author FalsePattern
      * @version 0.5.0
+     * @since 0.5.0
      */
     @StableAPI(since = "0.5.0")
     interface PacketDataManager extends DataManager {
@@ -114,9 +111,9 @@ public interface DataManager {
      * Implement this interface if you additionally want to synchronize your data on single and multi-block updates,
      * not just chunk updates.
      *
-     * @since 0.6.0
      * @author FalsePattern
      * @version 0.6.0
+     * @since 0.6.0
      */
     @StableAPI(since = "0.6.0")
     interface BlockPacketDataManager extends DataManager {
@@ -146,9 +143,10 @@ public interface DataManager {
     /**
      * The common superinterface for RootDataManager and SubChunkDataManager.
      * Contains version information and messages for users attempting to upgrade/remove versions.
-     * @since 0.5.0
+     *
      * @author FalsePattern
      * @version 0.5.0
+     * @since 0.5.0
      */
     @StableAPI(since = "0.5.0")
     interface StorageDataManager extends DataManager {
@@ -157,17 +155,15 @@ public interface DataManager {
          */
         @StableAPI.Expose
         @Contract(pure = true)
-        @NotNull
-        String version();
+        @NotNull String version();
 
         /**
          * @return The message to show to users when a world is opened with this mod for the first time.
-         *         Return null to show no message, and treat the manager as fully compatible with vanilla.
+         * Return null to show no message, and treat the manager as fully compatible with vanilla.
          */
         @StableAPI.Expose
         @Contract(pure = true)
-        @Nullable
-        String newInstallDescription();
+        @Nullable String newInstallDescription();
 
         /**
          * @return The message to show to users when this manager is removed, AND they try to load the world (stored in the
@@ -175,26 +171,25 @@ public interface DataManager {
          */
         @StableAPI.Expose
         @Contract(pure = true)
-        @NotNull
-        String uninstallMessage();
+        @NotNull String uninstallMessage();
 
         /**
          * @param priorVersion The version of the manager this world was saved with.
+         *
          * @return A warning message to show to the user when upgrading.\
-         *         If null, the manager is treated as fully compatible with the old version, and no warning is shown.
+         * If null, the manager is treated as fully compatible with the old version, and no warning is shown.
          */
         @StableAPI.Expose
         @Contract(pure = true)
-        @Nullable
-        String versionChangeMessage(String priorVersion);
+        @Nullable String versionChangeMessage(String priorVersion);
     }
 
     /**
      * Implement this interface if you want to save your data to disk. This is called once per chunk, hence "root"
      *
-     * @since 0.5.0
      * @author FalsePattern
      * @version 0.5.0
+     * @since 0.5.0
      */
     @StableAPI(since = "0.5.0")
     interface ChunkDataManager extends StorageDataManager {
@@ -232,8 +227,9 @@ public interface DataManager {
 
         /**
          * Directly copies data from one chunk to another chunk.
+         *
          * @param from The chunk to copy data from.
-         * @param to The chunk to copy data to.
+         * @param to   The chunk to copy data to.
          */
         @Contract(mutates = "param2")
         @StableAPI.Expose
@@ -244,9 +240,9 @@ public interface DataManager {
      * Implement this interface if you want to save your subChunk data to disk. This is called once per
      * ExtendedBlockStorage per chunk. (16 times per chunk)
      *
-     * @since 0.5.0
      * @author FalsePattern
      * @version 0.5.0
+     * @since 0.5.0
      */
     @StableAPI(since = "0.5.0")
     interface SubChunkDataManager extends StorageDataManager {
@@ -283,9 +279,10 @@ public interface DataManager {
 
         /**
          * Directly copies data from one subChunk to another.
+         *
          * @param fromChunk The owner of the subChunk to copy data from.
-         * @param from The subChunk to copy data from.
-         * @param to The subChunk to copy data to.
+         * @param from      The subChunk to copy data from.
+         * @param to        The subChunk to copy data to.
          */
         @Contract(mutates = "param3")
         @StableAPI.Expose
