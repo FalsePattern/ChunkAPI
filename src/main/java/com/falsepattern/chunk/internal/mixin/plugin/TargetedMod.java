@@ -28,8 +28,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.function.Predicate;
 
+import static com.falsepattern.lib.mixin.ITargetedMod.PredicateHelpers.contains;
+
 @RequiredArgsConstructor
 public enum TargetedMod implements ITargetedMod {
+    LOOKINGGLASS("Looking Glass", false, contains("lookingglass-"))
     ;
 
     @Getter

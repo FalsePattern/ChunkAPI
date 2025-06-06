@@ -51,9 +51,13 @@ minecraft_fp {
 }
 
 repositories {
+    cursemavenEX()
     exclusive(maven("mavenpattern", "https://mvn.falsepattern.com/releases/"), "com.falsepattern")
 }
 
 dependencies {
     apiSplit("com.falsepattern:falsepatternlib-mc1.7.10:1.5.9")
+
+    //LookingGlass 0.2.0.01
+    compileOnly(deobfCurse("lookingglass-230541:2321557"))
 }

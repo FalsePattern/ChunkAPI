@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static com.falsepattern.lib.mixin.IMixin.PredicateHelpers.always;
+import static com.falsepattern.lib.mixin.IMixin.PredicateHelpers.require;
 
 @RequiredArgsConstructor
 public enum Mixin implements IMixin {
@@ -44,6 +45,10 @@ public enum Mixin implements IMixin {
 
     ChunkMixin(Side.CLIENT, always(), "vanilla.ChunkMixin"),
     NetHandlerPlayClientMixin(Side.CLIENT, always(), "vanilla.NetHandlerPlayClientMixin"),
+
+    //region Looking Glass
+    PacketChunkInfoMixin(Side.COMMON, require(TargetedMod.LOOKINGGLASS), "lookingglass.PacketChunkInfoMixin"),
+    //endregion
     ;
     // @formatter:on
 
