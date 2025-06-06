@@ -22,6 +22,7 @@
 
 package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
 
+import com.falsepattern.chunk.internal.mixin.helpers.LockHelper;
 import lombok.val;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -90,21 +91,29 @@ public abstract class S26PacketMapChunkBulkMixin {
         subChunkMSBMasks = new int[chunkCount];
         datas = new byte[chunkCount][];
 
-        if (inflaterBuffer.length < deflatedSize) {
-            inflaterBuffer = new byte[deflatedSize];
+        while (!LockHelper.bufferLockS26PacketMapChunkBulk.tryLock()) {
+            Thread.yield();
         }
-
-        data.readBytes(inflaterBuffer, 0, deflatedSize);
-        byte[] buf = new byte[S21PacketChunkData.func_149275_c() * chunkCount];
-        Inflater inflater = new Inflater();
-        inflater.setInput(inflaterBuffer, 0, deflatedSize);
-
+        byte[] buf;
         try {
-            inflater.inflate(buf);
-        } catch (DataFormatException dataformatexception) {
-            throw new IOException("Bad compressed data format");
+            if (inflaterBuffer.length < deflatedSize) {
+                inflaterBuffer = new byte[deflatedSize];
+            }
+
+            data.readBytes(inflaterBuffer, 0, deflatedSize);
+            buf = new byte[S21PacketChunkData.func_149275_c() * chunkCount];
+            Inflater inflater = new Inflater();
+            inflater.setInput(inflaterBuffer, 0, deflatedSize);
+
+            try {
+                inflater.inflate(buf);
+            } catch (DataFormatException dataformatexception) {
+                throw new IOException("Bad compressed data format");
+            } finally {
+                inflater.end();
+            }
         } finally {
-            inflater.end();
+            LockHelper.bufferLockS26PacketMapChunkBulk.unlock();
         }
 
         int pos = 0;

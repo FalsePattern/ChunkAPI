@@ -23,6 +23,7 @@
 package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
 
 import com.falsepattern.chunk.internal.DataRegistryImpl;
+import com.falsepattern.chunk.internal.mixin.helpers.LockHelper;
 import lombok.val;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -90,10 +91,6 @@ public abstract class S21PacketChunkDataMixin {
         ExtendedBlockStorage[] subChunks = chunk.getBlockStorageArray();
         S21PacketChunkData.Extracted extracted = new S21PacketChunkData.Extracted();
 
-        if (buffer.length < DataRegistryImpl.maxPacketSize()) {
-            buffer = new byte[DataRegistryImpl.maxPacketSize()];
-        }
-
         if (forceUpdate) {
             chunk.sendUpdates = true;
         }
@@ -104,10 +101,21 @@ public abstract class S21PacketChunkDataMixin {
             }
         }
 
-        int length = DataRegistryImpl.writeToBuffer(chunk, extracted.field_150280_b, forceUpdate, buffer);
+        while (!LockHelper.bufferLockS21PacketChunkData.tryLock()) {
+            Thread.yield();
+        }
+        try {
+            if (buffer.length < DataRegistryImpl.maxPacketSize()) {
+                buffer = new byte[DataRegistryImpl.maxPacketSize()];
+            }
 
-        extracted.field_150282_a = new byte[length];
-        System.arraycopy(buffer, 0, extracted.field_150282_a, 0, length);
+            int length = DataRegistryImpl.writeToBuffer(chunk, extracted.field_150280_b, forceUpdate, buffer);
+
+            extracted.field_150282_a = new byte[length];
+            System.arraycopy(buffer, 0, extracted.field_150282_a, 0, length);
+        } finally {
+            LockHelper.bufferLockS21PacketChunkData.unlock();
+        }
         return extracted;
     }
 
