@@ -22,16 +22,16 @@
 
 package com.falsepattern.chunk.internal.mixin.plugin;
 
-import com.falsepattern.lib.mixin.IMixin;
-import com.falsepattern.lib.mixin.ITargetedMod;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixin;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.ITargetedMod;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.falsepattern.lib.mixin.IMixin.PredicateHelpers.always;
-import static com.falsepattern.lib.mixin.IMixin.PredicateHelpers.require;
+import static com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixin.PredicateHelpers.always;
+import static com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixin.PredicateHelpers.require;
 
 @RequiredArgsConstructor
 public enum Mixin implements IMixin {

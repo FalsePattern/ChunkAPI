@@ -22,13 +22,13 @@
 
 package com.falsepattern.chunk.internal.mixin.plugin;
 
-import com.falsepattern.lib.mixin.ITargetedMod;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.ITargetedMod;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.function.Predicate;
 
-import static com.falsepattern.lib.mixin.ITargetedMod.PredicateHelpers.contains;
+import static com.falsepattern.chunk.internal.mixin.plugin.fplib.ITargetedMod.PredicateHelpers.contains;
 
 @RequiredArgsConstructor
 public enum TargetedMod implements ITargetedMod {

@@ -23,9 +23,9 @@
 package com.falsepattern.chunk.internal.mixin.plugin;
 
 import com.falsepattern.chunk.internal.Tags;
-import com.falsepattern.lib.mixin.IMixin;
-import com.falsepattern.lib.mixin.IMixinPlugin;
-import com.falsepattern.lib.mixin.ITargetedMod;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixin;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixinPlugin;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.ITargetedMod;
 import lombok.Getter;
 import org.apache.logging.log4j.Logger;
 
