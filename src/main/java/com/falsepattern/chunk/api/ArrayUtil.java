@@ -22,7 +22,7 @@
 
 package com.falsepattern.chunk.api;
 
-import com.falsepattern.lib.StableAPI;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 
 import net.minecraft.world.chunk.NibbleArray;
@@ -33,11 +33,13 @@ import java.util.Arrays;
  * This is an API class covered by the additional permissions in the license.
  * <p>
  * Miscellaneous utilities for in-place array transfer (where possible).
+ * @version 0.5.0
+ * @since 0.5.0
  */
-@StableAPI(since = "0.5.0")
+@ApiStatus.NonExtendable
+@SuppressWarnings("DuplicatedCode")
 public class ArrayUtil {
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -52,7 +54,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -67,7 +68,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -82,7 +82,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -97,7 +96,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -112,7 +110,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -127,7 +124,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -142,7 +138,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -157,7 +152,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")
@@ -172,7 +166,6 @@ public class ArrayUtil {
         return dst;
     }
 
-    @StableAPI.Expose
     @Contract(value = "null, _ -> null;" +
                       "!null, null -> new;",
               mutates = "param2")

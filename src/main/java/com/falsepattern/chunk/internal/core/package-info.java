@@ -20,10 +20,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * This package contains the internal classes of the ChunkAPI library. Do not use these classes directly.
- */
 @ApiStatus.Internal
-package com.falsepattern.chunk.internal;
+package com.falsepattern.chunk.internal.core;
 
 import org.jetbrains.annotations.ApiStatus;

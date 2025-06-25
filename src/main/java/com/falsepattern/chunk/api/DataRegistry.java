@@ -23,7 +23,7 @@
 package com.falsepattern.chunk.api;
 
 import com.falsepattern.chunk.internal.DataRegistryImpl;
-import com.falsepattern.lib.StableAPI;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -42,7 +42,7 @@ import java.util.Set;
  * @see DataManager
  * @since 0.5.0
  */
-@StableAPI(since = "0.5.0")
+@ApiStatus.NonExtendable
 public class DataRegistry {
     /**
      * Registers a ChunkDataManager. Only do this during the init phase.
@@ -52,7 +52,6 @@ public class DataRegistry {
      * @throws IllegalStateException    If the registration stage is over.
      * @throws IllegalArgumentException If the manager has a duplicate id.
      */
-    @StableAPI.Expose
     public static void registerDataManager(DataManager manager) throws IllegalStateException, IllegalArgumentException {
         DataRegistryImpl.registerDataManager(manager);
     }
@@ -64,7 +63,6 @@ public class DataRegistry {
      *
      * @throws IllegalStateException If the disable stage is over.
      */
-    @StableAPI.Expose
     public static void disableDataManager(String domain, String id) throws IllegalStateException {
         DataRegistryImpl.disableDataManager(domain, id);
     }
@@ -74,7 +72,6 @@ public class DataRegistry {
      * The id of a manager is its domain and id separated by a colon. (domain:id)
      */
     @Contract(pure = true)
-    @StableAPI.Expose
     public static @Unmodifiable Set<String> getRegisteredManagers() {
         return DataRegistryImpl.getRegisteredManagers();
     }
@@ -87,7 +84,6 @@ public class DataRegistry {
      * @param to   The chunk to write the data to
      */
     @Contract(mutates = "param2")
-    @StableAPI.Expose(since = "0.5.0")
     public static void cloneChunk(Chunk from, Chunk to) {
         DataRegistryImpl.cloneChunk(from, to);
     }
@@ -100,7 +96,6 @@ public class DataRegistry {
      * @param to        The subChunk to write the data to
      */
     @Contract(mutates = "param3")
-    @StableAPI.Expose(since = "0.5.0")
     public static void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to) {
         DataRegistryImpl.cloneSubChunk(fromChunk, from, to);
     }

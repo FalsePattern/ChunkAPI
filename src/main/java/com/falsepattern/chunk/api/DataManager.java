@@ -22,7 +22,6 @@
 
 package com.falsepattern.chunk.api;
 
-import com.falsepattern.lib.StableAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,20 +50,17 @@ import java.nio.ByteBuffer;
  * @see DataRegistry
  * @since 0.5.0
  */
-@StableAPI(since = "0.5.0")
 public interface DataManager {
 
     /**
      * @return The domain of this manager. Usually the modid of the mod that owns this manager.
      */
-    @StableAPI.Expose
     @Contract(pure = true)
     String domain();
 
     /**
      * @return The id of this manager. Usually the name of the manager. Unique per domain.
      */
-    @StableAPI.Expose
     @Contract(pure = true)
     String id();
 
@@ -72,10 +68,8 @@ public interface DataManager {
      * Implement this interface if you want to synchronize your data with the client.
      *
      * @author FalsePattern
-     * @version 0.5.0
      * @since 0.5.0
      */
-    @StableAPI(since = "0.5.0")
     interface PacketDataManager extends DataManager {
         /**
          * @return The maximum amount of bytes your data can take up in a packet.
@@ -83,7 +77,6 @@ public interface DataManager {
          * @implSpec This is used to determine the size of the packet compression/decompression buffer.
          * Only called ONCE, during registration!
          */
-        @StableAPI.Expose
         @Contract(pure = true)
         int maxPacketSize();
 
@@ -93,7 +86,6 @@ public interface DataManager {
          * @param chunk The chunk to serialize.
          */
         @Contract(mutates = "param4")
-        @StableAPI.Expose
         void writeToBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer);
 
         /**
@@ -103,7 +95,6 @@ public interface DataManager {
          * @param buffer The packet buffer to read from.
          */
         @Contract(mutates = "param1,param4")
-        @StableAPI.Expose
         void readFromBuffer(Chunk chunk, int subChunkMask, boolean forceUpdate, ByteBuffer buffer);
     }
 
@@ -115,28 +106,23 @@ public interface DataManager {
      * @version 0.6.0
      * @since 0.6.0
      */
-    @StableAPI(since = "0.6.0")
     interface BlockPacketDataManager extends DataManager {
         @Contract(mutates = "param1")
-        @StableAPI.Expose
         void writeBlockToPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet);
 
         @Contract(mutates = "param1,param5")
-        @StableAPI.Expose
         void readBlockFromPacket(Chunk chunk, int x, int y, int z, S23PacketBlockChange packet);
 
         /**
          * Serializes your block data into a buffer.
          */
         @Contract(mutates = "param2")
-        @StableAPI.Expose
         void writeBlockPacketToBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException;
 
         /**
          * Deserializes your block data from a buffer.
          */
         @Contract(mutates = "param1,param2")
-        @StableAPI.Expose
         void readBlockPacketFromBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException;
     }
 
@@ -148,12 +134,10 @@ public interface DataManager {
      * @version 0.5.0
      * @since 0.5.0
      */
-    @StableAPI(since = "0.5.0")
     interface StorageDataManager extends DataManager {
         /**
          * @return The current version of the data manager
          */
-        @StableAPI.Expose
         @Contract(pure = true)
         @NotNull String version();
 
@@ -161,7 +145,6 @@ public interface DataManager {
          * @return The message to show to users when a world is opened with this mod for the first time.
          * Return null to show no message, and treat the manager as fully compatible with vanilla.
          */
-        @StableAPI.Expose
         @Contract(pure = true)
         @Nullable String newInstallDescription();
 
@@ -169,7 +152,6 @@ public interface DataManager {
          * @return The message to show to users when this manager is removed, AND they try to load the world (stored in the
          * world's NBT during previous saves)
          */
-        @StableAPI.Expose
         @Contract(pure = true)
         @NotNull String uninstallMessage();
 
@@ -179,7 +161,6 @@ public interface DataManager {
          * @return A warning message to show to the user when upgrading.\
          * If null, the manager is treated as fully compatible with the old version, and no warning is shown.
          */
-        @StableAPI.Expose
         @Contract(pure = true)
         @Nullable String versionChangeMessage(String priorVersion);
     }
@@ -191,7 +172,6 @@ public interface DataManager {
      * @version 0.5.0
      * @since 0.5.0
      */
-    @StableAPI(since = "0.5.0")
     interface ChunkDataManager extends StorageDataManager {
         /**
          * If false, the given nbt compound will be a freshly created object that gets inserted into the actual
@@ -201,7 +181,6 @@ public interface DataManager {
          *
          * @implNote This is used internally for reimplementing the vanilla logic. Only change this if you know what you're doing.
          */
-        @StableAPI.Expose
         @Contract(pure = true)
         default boolean chunkPrivilegedAccess() {
             return false;
@@ -211,7 +190,6 @@ public interface DataManager {
          * Serializes your data into an NBT tag. This is used when saving the chunk to disk.
          */
         @Contract(mutates = "param2")
-        @StableAPI.Expose
         void writeChunkToNBT(Chunk chunk, NBTTagCompound nbt);
 
 
@@ -222,7 +200,6 @@ public interface DataManager {
          * In this case, you should initialize the data to a sane default.
          */
         @Contract(mutates = "param1")
-        @StableAPI.Expose
         void readChunkFromNBT(Chunk chunk, NBTTagCompound nbt);
 
         /**
@@ -232,7 +209,6 @@ public interface DataManager {
          * @param to   The chunk to copy data to.
          */
         @Contract(mutates = "param2")
-        @StableAPI.Expose
         void cloneChunk(Chunk from, Chunk to);
     }
 
@@ -244,7 +220,6 @@ public interface DataManager {
      * @version 0.5.0
      * @since 0.5.0
      */
-    @StableAPI(since = "0.5.0")
     interface SubChunkDataManager extends StorageDataManager {
         /**
          * If false, the given nbt compound will be a freshly created object that gets inserted into the actual
@@ -254,7 +229,6 @@ public interface DataManager {
          *
          * @implNote This is used internally for reimplementing the vanilla logic. Only change this if you know what you're doing.
          */
-        @StableAPI.Expose
         @Contract(pure = true)
         default boolean subChunkPrivilegedAccess() {
             return false;
@@ -264,7 +238,6 @@ public interface DataManager {
          * Serializes your data into an NBT tag. This is used when saving the chunk to disk.
          */
         @Contract(mutates = "param3")
-        @StableAPI.Expose
         void writeSubChunkToNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt);
 
         /**
@@ -274,7 +247,6 @@ public interface DataManager {
          * In this case, you should initialize the data to a sane default.
          */
         @Contract(mutates = "param2")
-        @StableAPI.Expose
         void readSubChunkFromNBT(Chunk chunk, ExtendedBlockStorage subChunk, NBTTagCompound nbt);
 
         /**
@@ -285,7 +257,6 @@ public interface DataManager {
          * @param to        The subChunk to copy data to.
          */
         @Contract(mutates = "param3")
-        @StableAPI.Expose
         void cloneSubChunk(Chunk fromChunk, ExtendedBlockStorage from, ExtendedBlockStorage to);
     }
 }

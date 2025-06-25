@@ -21,12 +21,10 @@
  */
 
 /**
- * This is an API package covered by the additional permissions in the license.
- * <p>
  * This package contains the classes that you will use to interact with the ChunkAPI library.
  *
  * @author FalsePattern
- * @version 0.5.0
+ * @version 0.6.0
  * @since 0.5.0
  */
 package com.falsepattern.chunk.api;
