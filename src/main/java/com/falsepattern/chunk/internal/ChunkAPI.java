@@ -36,8 +36,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 @Mod(modid = Tags.MOD_ID,
      version = Tags.MOD_VERSION,
      name = Tags.MOD_NAME,
-     acceptedMinecraftVersions = "[1.7.10]",
-     dependencies = "required-after:falsepatternlib@[1.5.9,);")
+     acceptedMinecraftVersions = "[1.7.10]")
 public class ChunkAPI {
 
     @Mod.EventHandler
