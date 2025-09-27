@@ -31,6 +31,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * This is an API class covered by the additional permissions in the license.
@@ -48,12 +49,36 @@ public class DataRegistry {
      * Registers a ChunkDataManager. Only do this during the init phase.
      *
      * @param manager The manager to register.
+     * @param ordering The natural ordering index for the data manager when iterating the list of managers.
+     *                 <p>
+     *                 ChunkAPI, Lumi, RPLE, and EndlessIDs all use 0. Negative numbers are sorted earlier. Positive numbers are sorted later.
+     *                 <p>
+     *                 Use 0 unless you specifically need to do something later.
+     *                 <p>
+     *                 As a convention, do this in increments of 1000 so that other people can order "between" your manager and the base managers.
+     *
      *
      * @throws IllegalStateException    If the registration stage is over.
      * @throws IllegalArgumentException If the manager has a duplicate id.
      */
+    public static void registerDataManager(DataManager manager, int ordering) throws IllegalStateException, IllegalArgumentException {
+        DataRegistryImpl.registerDataManager(manager, ordering);
+    }
+
+    /**
+     * Registers a ChunkDataManager. Only do this during the init phase.
+     * Has an implicit ordering index of 0.
+     *
+     * @deprecated Use {@link #registerDataManager(DataManager, int)} with an explicit ordering.
+     *
+     * @param manager The manager to register.
+     *
+     * @throws IllegalStateException    If the registration stage is over.
+     * @throws IllegalArgumentException If the manager has a duplicate id.
+     */
+    @Deprecated
     public static void registerDataManager(DataManager manager) throws IllegalStateException, IllegalArgumentException {
-        DataRegistryImpl.registerDataManager(manager);
+        DataRegistryImpl.registerDataManager(manager, 0);
     }
 
     /**
@@ -72,8 +97,20 @@ public class DataRegistry {
      * The id of a manager is its domain and id separated by a colon. (domain:id)
      */
     @Contract(pure = true)
+    @Deprecated
     public static @Unmodifiable Set<String> getRegisteredManagers() {
         return DataRegistryImpl.getRegisteredManagers();
+    }
+
+    /**
+     * Returns an unmodifiable set of all registered ChunkDataManagers.
+     * The id of a manager is its domain and id separated by a colon. (domain:id)
+     * <p>
+     * This function also includes the ordering index of each manager.
+     */
+    @Contract(pure = true)
+    public static @Unmodifiable SortedSet<OrderedManager> getRegisteredManagersOrdered() {
+        return DataRegistryImpl.getRegisteredManagersOrdered();
     }
 
     /**

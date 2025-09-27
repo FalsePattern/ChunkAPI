@@ -23,6 +23,7 @@
 package com.falsepattern.chunk.internal;
 
 import com.falsepattern.chunk.api.DataManager;
+import com.falsepattern.chunk.api.OrderedManager;
 import lombok.Data;
 import lombok.val;
 import lombok.var;
@@ -48,15 +49,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class DataRegistryImpl {
-    private static final Set<String> managers = new HashSet<>();
-    private static final Map<String, PacketManagerInfo> packetManagers = new HashMap<>();
-    private static final Map<String, DataManager.BlockPacketDataManager> blockPacketManagers = new HashMap<>();
-    private static final Map<String, DataManager.StorageDataManager> NBTManagers = new HashMap<>();
-    private static final Map<String, DataManager.ChunkDataManager> chunkNBTManagers = new HashMap<>();
-    private static final Map<String, DataManager.SubChunkDataManager> subChunkNBTManagers = new HashMap<>();
+    private static final Map<String, OrderedManager> managersUnordered = new HashMap<>();
+    private static final SortedSet<OrderedManager> managers = new TreeSet<>();
+    private static final DualMap<PacketManagerInfo> packetManagers = new DualMap<>();
+    private static final DualMap<DataManager.BlockPacketDataManager> blockPacketManagers = new DualMap<>();
+    private static final DualMap<DataManager.StorageDataManager> NBTManagers = new DualMap<>();
+    private static final SortedMap<OrderedManager, DataManager.ChunkDataManager> chunkNBTManagers = new TreeMap<>();
+    private static final SortedMap<OrderedManager, DataManager.SubChunkDataManager> subChunkNBTManagers = new TreeMap<>();
     private static final Set<String> disabledManagers = new HashSet<>();
     private static int maxPacketSize = 4;
 
@@ -66,12 +72,12 @@ public class DataRegistryImpl {
         public final DataManager.PacketDataManager manager;
     }
 
-    public static void registerDataManager(DataManager manager) throws IllegalStateException, IllegalArgumentException {
+    public static void registerDataManager(DataManager manager, int ordering) throws IllegalStateException, IllegalArgumentException {
         if (Loader.instance().getLoaderState() != LoaderState.INITIALIZATION) {
             throw new IllegalStateException("ChunkDataManager registration is not allowed at this time! Please register your ChunkDataManager in the init phase.");
         }
         var id = manager.domain() + ":" + manager.id();
-        if (managers.contains(id)) {
+        if (managersUnordered.containsKey(id)) {
             throw new IllegalArgumentException("ChunkDataManager " + manager + " has a duplicate id!");
         }
 
@@ -80,24 +86,27 @@ public class DataRegistryImpl {
             return;
         }
 
-        managers.add(id);
+        val ord = new OrderedManager(ordering, id);
+        managersUnordered.put(id, ord);
+        managers.add(ord);
         if (manager instanceof DataManager.PacketDataManager) {
             val packetManager = (DataManager.PacketDataManager) manager;
             val maxSize = packetManager.maxPacketSize();
             maxPacketSize += 4 + id.getBytes(StandardCharsets.UTF_8).length + 4 + maxSize;
-            packetManagers.put(id, new PacketManagerInfo(maxSize, packetManager));
+            val man = new PacketManagerInfo(maxSize, packetManager);
+            packetManagers.put(ord, man);
         }
         if (manager instanceof DataManager.BlockPacketDataManager) {
             val blockPacketManager = (DataManager.BlockPacketDataManager) manager;
-            blockPacketManagers.put(id, blockPacketManager);
+            blockPacketManagers.put(ord, blockPacketManager);
         }
         if (manager instanceof DataManager.StorageDataManager) {
-            NBTManagers.put(id, (DataManager.StorageDataManager) manager);
+            NBTManagers.put(ord, (DataManager.StorageDataManager) manager);
             if (manager instanceof DataManager.ChunkDataManager) {
-                chunkNBTManagers.put(id, (DataManager.ChunkDataManager) manager);
+                chunkNBTManagers.put(ord, (DataManager.ChunkDataManager) manager);
             }
             if (manager instanceof DataManager.SubChunkDataManager) {
-                subChunkNBTManagers.put(id, (DataManager.SubChunkDataManager) manager);
+                subChunkNBTManagers.put(ord, (DataManager.SubChunkDataManager) manager);
             }
         }
     }
@@ -109,17 +118,19 @@ public class DataRegistryImpl {
         Common.LOG.debug("Disabling ChunkDataManager " + id + " in domain " + domain + ". See the stacktrace for the source of this event.\nThis is NOT an error.",
                          new Throwable());
         val manager = domain + ":" + id;
+        val ord = managersUnordered.remove(manager);
         //Remove the manager from the list of managers, if it exists
-        if (managers.remove(manager)) {
+        if (ord != null) {
+            managers.remove(ord);
             //Clear the maps
-            if (packetManagers.containsKey(manager)) {
-                val removed = packetManagers.remove(manager);
+            if (packetManagers.containsKey(ord)) {
+                val removed = packetManagers.remove(ord);
                 maxPacketSize -= 4 + id.getBytes(StandardCharsets.UTF_8).length + 4 + removed.maxPacketSize;
             }
-            blockPacketManagers.remove(manager);
-            chunkNBTManagers.remove(manager);
-            subChunkNBTManagers.remove(manager);
-            NBTManagers.remove(manager);
+            blockPacketManagers.remove(ord);
+            chunkNBTManagers.remove(ord);
+            subChunkNBTManagers.remove(ord);
+            NBTManagers.remove(ord);
         }
 
         //Add the manager to the list of disabled managers, in case it gets registered after this disable call.
@@ -171,9 +182,9 @@ public class DataRegistryImpl {
         buf.order(ByteOrder.LITTLE_ENDIAN);
         buf.putInt(packetManagers.size());
         for (val pair : packetManagers.entrySet()) {
-            val id = pair.getKey();
+            val ord = pair.getKey();
             val managerInfo = pair.getValue();
-            writeString(buf, id);
+            writeString(buf, ord.id);
             int start = buf.position() + 4;
             val slice = createSlice(buf, start, managerInfo.maxPacketSize);
             managerInfo.manager.writeToBuffer(chunk, subChunkMask, forceUpdate, slice);
@@ -199,9 +210,9 @@ public class DataRegistryImpl {
     public static void writeBlockPacketToBuffer(S23PacketBlockChange packet, PacketBuffer buffer) throws IOException {
         buffer.writeInt(blockPacketManagers.size());
         for (val pair : blockPacketManagers.entrySet()) {
-            val id = pair.getKey();
+            val ord = pair.getKey();
             val manager = pair.getValue();
-            buffer.writeStringToBuffer(id);
+            buffer.writeStringToBuffer(ord.id);
             manager.writeBlockPacketToBuffer(packet, buffer);
         }
     }
@@ -300,7 +311,11 @@ public class DataRegistryImpl {
     }
 
     public static Set<String> getRegisteredManagers() {
-        return Collections.unmodifiableSet(managers);
+        return Collections.unmodifiableSet(managersUnordered.keySet());
+    }
+
+    public static SortedSet<OrderedManager> getRegisteredManagersOrdered() {
+        return Collections.unmodifiableSortedSet(managers);
     }
 
     public static void readLevelDat(NBTTagCompound tag) {
@@ -349,7 +364,9 @@ public class DataRegistryImpl {
         StringBuilder builder = new StringBuilder();
         val saveManagers = readManagers(tag);
         val removedManagers = new HashSet<>(saveManagers.keySet());
-        removedManagers.removeAll(NBTManagers.keySet());
+        for (val nbtManager: NBTManagers.keySet()) {
+            removedManagers.remove(nbtManager.id);
+        }
         if (!removedManagers.isEmpty()) {
             compatWarning = true;
             builder.append("\nThe following data managers are no longer present:\n");
@@ -370,8 +387,8 @@ public class DataRegistryImpl {
         }
         val addedManagers = NBTManagers.keySet()
                                        .stream()
-                                       .filter(manager -> !manager.startsWith("minecraft:"))
-                                       .filter(manager -> !saveManagers.containsKey(manager))
+                                       .filter(manager -> !manager.id.startsWith("minecraft:"))
+                                       .filter(manager -> !saveManagers.containsKey(manager.id))
                                        .collect(Collectors.toSet());
         if (!addedManagers.isEmpty()) {
             compatWarning = true;
@@ -417,12 +434,12 @@ public class DataRegistryImpl {
         tag.setTag("managers", managers);
         tag.setString("version", Tags.MOD_VERSION);
         for (val manager : NBTManagers.entrySet()) {
-            val name = manager.getKey();
-            if (name.startsWith("minecraft:")) {
+            val ord = manager.getKey();
+            if (ord.id.startsWith("minecraft:")) {
                 continue;
             }
             val value = manager.getValue();
-            managers.setTag(name, SaveManagerInfo.fromManager(value).toNBT());
+            managers.setTag(ord.id, SaveManagerInfo.fromManager(value).toNBT());
         }
     }
 
@@ -435,7 +452,6 @@ public class DataRegistryImpl {
             return managers;
         }
         val managerTag = tag.getCompoundTag("managers");
-        //noinspection unchecked
         for (val key : managerTag.func_150296_c()) {
             managers.put(key, SaveManagerInfo.fromNBT(managerTag.getCompoundTag(key)));
         }

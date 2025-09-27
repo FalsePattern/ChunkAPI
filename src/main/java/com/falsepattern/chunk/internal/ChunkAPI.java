@@ -41,11 +41,11 @@ public class ChunkAPI {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        DataRegistry.registerDataManager(new BlockIDManager());
-        DataRegistry.registerDataManager(new MetadataManager());
-        DataRegistry.registerDataManager(new LightingManager());
-        DataRegistry.registerDataManager(new BlocklightManager());
-        DataRegistry.registerDataManager(new SkylightManager());
-        DataRegistry.registerDataManager(new BiomeManager());
+        DataRegistry.registerDataManager(new BlockIDManager(), 0);
+        DataRegistry.registerDataManager(new MetadataManager(), 0);
+        DataRegistry.registerDataManager(new LightingManager(), 0);
+        DataRegistry.registerDataManager(new BlocklightManager(), 0);
+        DataRegistry.registerDataManager(new SkylightManager(), 0);
+        DataRegistry.registerDataManager(new BiomeManager(), 0);
     }
 }
