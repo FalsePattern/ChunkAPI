@@ -117,5 +117,4 @@ Manager data:
 Dependencies
 ------------
 
-[FalsePatternLib](https://github.com/Falsepattern/FalsePatternLib)
 [UniMixins](https://github.com/LegacyModdingMC/UniMixins)
