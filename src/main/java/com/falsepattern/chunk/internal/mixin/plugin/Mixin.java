@@ -22,41 +22,84 @@
 
 package com.falsepattern.chunk.internal.mixin.plugin;
 
-import com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixin;
-import com.falsepattern.chunk.internal.mixin.plugin.fplib.ITargetedMod;
+import com.falsepattern.chunk.internal.Tags;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.MixinHelper;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.SidedMixins;
+import com.falsepattern.chunk.internal.mixin.plugin.fplib.TaggedMod;
+import com.gtnewhorizon.gtnhmixins.builders.IMixins;
+import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.intellij.lang.annotations.Language;
 
-import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.BooleanSupplier;
 
-import static com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixin.PredicateHelpers.always;
-import static com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixin.PredicateHelpers.require;
+import static com.falsepattern.chunk.internal.mixin.plugin.TargetMod.LookingGlass;
+import static com.falsepattern.chunk.internal.mixin.plugin.fplib.MixinHelper.avoid;
+import static com.falsepattern.chunk.internal.mixin.plugin.fplib.MixinHelper.builder;
+import static com.falsepattern.chunk.internal.mixin.plugin.fplib.MixinHelper.mods;
+import static com.falsepattern.chunk.internal.mixin.plugin.fplib.MixinHelper.require;
 
 @RequiredArgsConstructor
-public enum Mixin implements IMixin {
-    // @formatter:off
-    AnvilChunkLoaderMixin(Side.COMMON, always(), "vanilla.AnvilChunkLoaderMixin"),
-    PlayerInstanceMixin(Side.COMMON, always(), "vanilla.PlayerInstanceMixin"),
-    S21PacketChunkDataMixin(Side.COMMON, always(), "vanilla.S21PacketChunkDataMixin"),
-    S22PacketMultiBlockChangeMixin(Side.COMMON, always(), "vanilla.S22PacketMultiBlockChangeMixin"),
-    S23PacketBlockChangeMixin(Side.COMMON, always(), "vanilla.S23PacketBlockChangeMixin"),
-    S26PacketMapChunkBulkMixin(Side.COMMON, always(), "vanilla.S26PacketMapChunkBulkMixin"),
+public enum Mixin implements IMixins {
+    Core(Phase.EARLY,
+         common("vanilla.AnvilChunkLoaderMixin",
+                "vanilla.PlayerInstanceMixin",
+                "vanilla.S21PacketChunkDataMixin",
+                "vanilla.S22PacketMultiBlockChangeMixin",
+                "vanilla.S23PacketBlockChangeMixin",
+                "vanilla.S26PacketMapChunkBulkMixin"),
+         client("vanilla.ChunkMixin",
+                "vanilla.NetHandlerPlayClientMixin")),
 
-    ChunkMixin(Side.CLIENT, always(), "vanilla.ChunkMixin"),
-    NetHandlerPlayClientMixin(Side.CLIENT, always(), "vanilla.NetHandlerPlayClientMixin"),
-
-    //region Looking Glass
-    PacketChunkInfoMixin(Side.COMMON, require(TargetedMod.LOOKINGGLASS), "lookingglass.PacketChunkInfoMixin"),
-    //endregion
+    Compat_LookingGlass(Phase.LATE,
+                        require(LookingGlass),
+                        common("lookingglass.PacketChunkInfoMixin")),
+    //region boilerplate
     ;
-    // @formatter:on
+    @Getter
+    private final MixinBuilder builder;
 
-    @Getter
-    private final Side side;
-    @Getter
-    private final Predicate<List<ITargetedMod>> filter;
-    @Getter
-    private final String mixin;
+    Mixin(Phase phase, SidedMixins... mixins) {
+        this(builder(mixins).setPhase(phase));
+    }
+
+    Mixin(Phase phase, BooleanSupplier cond, SidedMixins... mixins) {
+        this(builder(cond, mixins).setPhase(phase));
+    }
+
+    Mixin(Phase phase, TaggedMod mod, SidedMixins... mixins) {
+        this(builder(mod, mixins).setPhase(phase));
+    }
+
+    Mixin(Phase phase, TaggedMod[] mods, SidedMixins... mixins) {
+        this(builder(mods, mixins).setPhase(phase));
+    }
+
+    Mixin(Phase phase, BooleanSupplier cond, TaggedMod mod, SidedMixins... mixins) {
+        this(builder(cond, mod, mixins).setPhase(phase));
+    }
+
+    Mixin(Phase phase, BooleanSupplier cond, TaggedMod[] mods, SidedMixins... mixins) {
+        this(builder(cond, mods, mixins).setPhase(phase));
+    }
+
+    private static SidedMixins common(@Language(value = "JAVA",
+                                                prefix = "import " + Tags.ROOT_PKG + ".internal.mixin.mixins.common.",
+                                                suffix = ";") String... mixins) {
+        return MixinHelper.common(mixins);
+    }
+
+    private static SidedMixins client(@Language(value = "JAVA",
+                                                prefix = "import " + Tags.ROOT_PKG + ".internal.mixin.mixins.client.",
+                                                suffix = ";") String... mixins) {
+        return MixinHelper.client(mixins);
+    }
+
+    private static SidedMixins server(@Language(value = "JAVA",
+                                                prefix = "import " + Tags.ROOT_PKG + ".mixin.mixins.server.",
+                                                suffix = ";") String... mixins) {
+        return MixinHelper.server(mixins);
+    }
+    //endregion
 }
-

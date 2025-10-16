@@ -22,24 +22,34 @@
 
 package com.falsepattern.chunk.internal.mixin.plugin;
 
-import com.falsepattern.chunk.internal.Tags;
-import com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixin;
-import com.falsepattern.chunk.internal.mixin.plugin.fplib.IMixinPlugin;
-import com.falsepattern.chunk.internal.mixin.plugin.fplib.ITargetedMod;
+import com.gtnewhorizon.gtnhmixins.builders.ITargetMod;
+import com.gtnewhorizon.gtnhmixins.builders.TargetModBuilder;
 import lombok.Getter;
-import org.apache.logging.log4j.Logger;
+import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class MixinPlugin implements IMixinPlugin {
+import java.util.function.Consumer;
+
+public enum TargetMod implements ITargetMod {
+    LookingGlass("com.xcompwiz.lookingglass.LookingGlass"),
+    ;
     @Getter
-    private final Logger logger = IMixinPlugin.createLogger(Tags.MOD_NAME);
+    private final TargetModBuilder builder;
 
-    @Override
-    public ITargetedMod[] getTargetedModEnumValues() {
-        return TargetedMod.values();
+    TargetMod(@Language(value = "JAVA",
+                        prefix = "import ",
+                        suffix = ";") @NotNull String className) {
+        this(className, null);
     }
 
-    @Override
-    public IMixin[] getMixinEnumValues() {
-        return Mixin.values();
+    TargetMod(@Language(value = "JAVA",
+                        prefix = "import ",
+                        suffix = ";") @NotNull String className, @Nullable Consumer<TargetModBuilder> cfg) {
+        builder = new TargetModBuilder();
+        builder.setTargetClass(className);
+        if (cfg != null) {
+            cfg.accept(builder);
+        }
     }
 }

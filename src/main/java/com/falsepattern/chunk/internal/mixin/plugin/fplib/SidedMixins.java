@@ -19,23 +19,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with FalsePatternLib. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.falsepattern.chunk.internal.mixin.plugin.fplib;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.gtnewhorizon.gtnhmixins.builders.IBaseTransformer;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-
-/**
- * Backport from spongemixins 1.3 for compat with the curseforge 1.2.0 version.
- * <p>
- * Also added Grimoire protection.
- *
- * @since 0.10.0
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MinecraftURLClassPath {
-    public static void addJar(File pathToJar) throws Exception {
-        UCPImpl.addJar(pathToJar);
-    }
+@RequiredArgsConstructor
+public class SidedMixins {
+    public final IBaseTransformer.@NotNull Side side;
+    public final @NotNull String @NotNull [] mixins;
 }

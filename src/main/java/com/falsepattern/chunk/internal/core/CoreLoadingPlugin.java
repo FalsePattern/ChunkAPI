@@ -23,13 +23,19 @@
 package com.falsepattern.chunk.internal.core;
 
 import com.falsepattern.chunk.internal.Tags;
+import com.falsepattern.chunk.internal.mixin.plugin.Mixin;
+import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
+import com.gtnewhorizon.gtnhmixins.builders.IMixins;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @IFMLLoadingPlugin.TransformerExclusions(Tags.ROOT_PKG + ".internal.core")
-public class CoreLoadingPlugin implements IFMLLoadingPlugin {
+public class CoreLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoader {
     @Override
     public String[] getASMTransformerClass() {
         return new String[0];
@@ -53,5 +59,15 @@ public class CoreLoadingPlugin implements IFMLLoadingPlugin {
     @Override
     public String getAccessTransformerClass() {
         return null;
+    }
+
+    @Override
+    public String getMixinConfig() {
+        return "mixins.chunkapi.early.json";
+    }
+
+    @Override
+    public List<String> getMixins(Set<String> loadedCoreMods) {
+        return IMixins.getEarlyMixins(Mixin.class, loadedCoreMods);
     }
 }

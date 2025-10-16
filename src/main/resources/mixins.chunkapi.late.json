@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.falsepattern.chunk.internal.mixin.mixins",
+  "refmap": "mixins.chunkapi.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8"
+}
+

@@ -22,23 +22,23 @@
 
 package com.falsepattern.chunk.internal.mixin.plugin;
 
-import com.falsepattern.chunk.internal.mixin.plugin.fplib.ITargetedMod;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.gtnewhorizon.gtnhmixins.ILateMixinLoader;
+import com.gtnewhorizon.gtnhmixins.LateMixin;
+import com.gtnewhorizon.gtnhmixins.builders.IMixins;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Predicate;
+import java.util.List;
+import java.util.Set;
 
-import static com.falsepattern.chunk.internal.mixin.plugin.fplib.ITargetedMod.PredicateHelpers.contains;
+@LateMixin
+public class LateMixins implements ILateMixinLoader {
+    @Override
+    public String getMixinConfig() {
+        return "mixins.chunkapi.late.json";
+    }
 
-@RequiredArgsConstructor
-public enum TargetedMod implements ITargetedMod {
-    LOOKINGGLASS("Looking Glass", false, contains("lookingglass-"))
-    ;
-
-    @Getter
-    private final String modName;
-    @Getter
-    private final boolean loadInDevelopment;
-    @Getter
-    private final Predicate<String> condition;
+    @Override
+    public @NotNull List<String> getMixins(Set<String> loadedMods) {
+        return IMixins.getLateMixins(Mixin.class, loadedMods);
+    }
 }

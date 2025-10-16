@@ -19,29 +19,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with FalsePatternLib. If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.falsepattern.chunk.internal.mixin.plugin.fplib;
 
-import lombok.experimental.UtilityClass;
+import com.gtnewhorizon.gtnhmixins.builders.ITargetMod;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.launchwrapper.Launch;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-/**
- * @since 0.8.2
- */
-@UtilityClass
-public final class FileUtil {
-    public static File getMinecraftHome() {
-        return getMinecraftHomePath().toFile();
-    }
-
-    /**
-     * @since 1.0.0
-     */
-    public static Path getMinecraftHomePath() {
-        return Launch.minecraftHome == null ? Paths.get("").toAbsolutePath() : Launch.minecraftHome.toPath();
-    }
+@RequiredArgsConstructor
+public class TaggedMod {
+    public final boolean require;
+    public final @NotNull ITargetMod mod;
 }
