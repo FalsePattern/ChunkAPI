@@ -20,7 +20,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
+package com.falsepattern.chunk.internal.mixin.mixins.common.base;
 
 import com.falsepattern.chunk.internal.BlockPosUtil;
 import com.falsepattern.chunk.internal.DataRegistryImpl;
