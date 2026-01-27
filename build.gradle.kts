@@ -9,7 +9,6 @@ minecraft_fp {
         modid = "chunkapi"
         name = "ChunkAPI"
         rootPkg = "$group.chunk"
-        version = "0.7.0"
     }
 
     api {

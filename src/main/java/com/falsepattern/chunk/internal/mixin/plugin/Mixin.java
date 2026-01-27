@@ -46,21 +46,18 @@ public enum Mixin implements IMixins {
     // @formatter:off
     VanillaCore(Phase.EARLY,
                 () -> !hasThermos(),
-         common("vanilla.PlayerInstanceMixin",
-                "vanilla.S21PacketChunkDataMixin",
-                "vanilla.S22PacketMultiBlockChangeMixin",
-                "vanilla.S23PacketBlockChangeMixin",
-                "vanilla.S26PacketMapChunkBulkMixin"),
-         client("vanilla.NetHandlerPlayClientMixin")),
+         common("vanilla.S26PacketMapChunkBulkMixin")),
     
     ThermosCore(Phase.EARLY,
                 () -> hasThermos(),
-                common("vanilla.PlayerInstanceMixin",
-                       "vanilla.S21PacketChunkDataMixin",
-                       "vanilla.S22PacketMultiBlockChangeMixin",
-                       "vanilla.S23PacketBlockChangeMixin",
-                       "thermos.S26PacketMapChunkBulkMixin"),
-                client("vanilla.NetHandlerPlayClientMixin")),
+                common("thermos.S26PacketMapChunkBulkMixin")),
+    
+    CommonCore(Phase.EARLY,
+               common("vanilla.PlayerInstanceMixin",
+                      "vanilla.S21PacketChunkDataMixin",
+                      "vanilla.S22PacketMultiBlockChangeMixin",
+                      "vanilla.S23PacketBlockChangeMixin"),
+               client("vanilla.NetHandlerPlayClientMixin")),
     
     //from: https://github.com/BallOfEnergy1/ChunkAPI/commit/4f5c0e60e04b6892d206f5f5d93cb20ba6b45608
     Core_NoSpool(Phase.EARLY,
