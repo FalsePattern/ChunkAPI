@@ -2,6 +2,7 @@
  * ChunkAPI
  *
  * Copyright (C) 2023-2025 FalsePattern, The MEGA Team, LegacyModdingMC contributors
+ * Copyright (C) 2025 Cardinalstar16
  * All Rights Reserved
  *
  * The above copyright notice and this permission notice shall be included
