@@ -46,7 +46,7 @@ public enum Mixin implements IMixins {
     // @formatter:off
     VanillaCore(Phase.EARLY,
                 () -> !hasThermos(),
-         common("vanilla.S26PacketMapChunkBulkMixin")),
+                common("vanilla.S26PacketMapChunkBulkMixin")),
     
     ThermosCore(Phase.EARLY,
                 () -> hasThermos(),
