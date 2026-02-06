@@ -2,6 +2,7 @@
  * ChunkAPI
  *
  * Copyright (C) 2023-2025 FalsePattern, The MEGA Team, LegacyModdingMC contributors
+ * Copyright (C) 2025 Cardinalstar16
  * All Rights Reserved
  *
  * The above copyright notice and this permission notice shall be included
@@ -20,7 +21,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.falsepattern.chunk.internal.mixin.mixins.common.vanilla;
+package com.falsepattern.chunk.internal.mixin.mixins.common.thermos;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -29,15 +30,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S26PacketMapChunkBulk;
 
-import java.util.concurrent.Semaphore;
 
 @Mixin(S26PacketMapChunkBulk.class)
 public abstract class S26PacketMapChunkBulkMixin {
     @Shadow(aliases = "field_149263_e",
             remap = false)
     private byte[] deflatedData;
-    @Shadow(remap = false)
-    private Semaphore deflateGate;
     @Shadow(aliases = "field_149266_a",
             remap = false)
     private int[] xPositions;
@@ -58,21 +56,16 @@ public abstract class S26PacketMapChunkBulkMixin {
     private byte[][] datas;
 
     @Shadow(remap = false)
-    protected abstract void deflate();
-
+    protected abstract void compress();
+    
     /**
      * @author FalsePattern
-     * @reason Replace functionality
+     * @author Cardinalstar16
+     * @reason Replace functionality for thermos
      */
     @Overwrite
     public void writePacketData(PacketBuffer data) {
-        if (deflatedData == null) {
-            deflateGate.acquireUninterruptibly();
-            if (deflatedData == null) {
-                deflate();
-            }
-            deflateGate.release();
-        }
+        compress();
 
         data.writeShort(xPositions.length);
         for (byte[] bytes : datas) {

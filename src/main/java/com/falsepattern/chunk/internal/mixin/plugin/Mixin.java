@@ -44,18 +44,25 @@ import static com.falsepattern.chunk.internal.mixin.plugin.fplib.MixinHelper.req
 @RequiredArgsConstructor
 public enum Mixin implements IMixins {
     // @formatter:off
-    Core(Phase.EARLY,
-         common("vanilla.PlayerInstanceMixin",
-                "vanilla.S21PacketChunkDataMixin",
-                "vanilla.S22PacketMultiBlockChangeMixin",
-                "vanilla.S23PacketBlockChangeMixin",
-                "vanilla.S26PacketMapChunkBulkMixin"),
-         client("vanilla.NetHandlerPlayClientMixin")),
-
+    VanillaCore(Phase.EARLY,
+                () -> !hasThermos(),
+                common("vanilla.S26PacketMapChunkBulkMixin")),
+    
+    ThermosCore(Phase.EARLY,
+                () -> hasThermos(),
+                common("thermos.S26PacketMapChunkBulkMixin")),
+    
+    CommonCore(Phase.EARLY,
+               common("base.PlayerInstanceMixin",
+                      "base.S21PacketChunkDataMixin",
+                      "base.S22PacketMultiBlockChangeMixin",
+                      "base.S23PacketBlockChangeMixin"),
+               client("vanilla.NetHandlerPlayClientMixin")),
+    
     //from: https://github.com/BallOfEnergy1/ChunkAPI/commit/4f5c0e60e04b6892d206f5f5d93cb20ba6b45608
     Core_NoSpool(Phase.EARLY,
                  avoid(Spool),
-                 common("vanilla.AnvilChunkLoaderMixin"),
+                 common("base.AnvilChunkLoaderMixin"),
                  client("vanilla.ChunkMixin")),
 
     Compat_LookingGlass(Phase.LATE,
@@ -110,4 +117,16 @@ public enum Mixin implements IMixins {
         return MixinHelper.server(mixins);
     }
     //endregion
+    
+    static boolean hasThermos()
+    {
+        try
+        {
+            Class.forName("thermos.Thermos");
+            return true;
+        }
+        catch(ClassNotFoundException ignored) {
+            return false;
+        }
+    }
 }
