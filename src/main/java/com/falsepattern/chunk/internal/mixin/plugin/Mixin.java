@@ -56,7 +56,8 @@ public enum Mixin implements IMixins {
                common("base.PlayerInstanceMixin",
                       "base.S21PacketChunkDataMixin",
                       "base.S22PacketMultiBlockChangeMixin",
-                      "base.S23PacketBlockChangeMixin"),
+                      "base.S23PacketBlockChangeMixin",
+                      "base.S26PacketMapChunkBulkMixin"),
                client("vanilla.NetHandlerPlayClientMixin")),
     
     //from: https://github.com/BallOfEnergy1/ChunkAPI/commit/4f5c0e60e04b6892d206f5f5d93cb20ba6b45608
