@@ -122,7 +122,7 @@ public enum Mixin implements IMixins {
     {
         try
         {
-            Class.forName("thermos.Thermos");
+            Class.forName("thermos.ThermosClassTransformer");
             return true;
         }
         catch(ClassNotFoundException ignored) {
