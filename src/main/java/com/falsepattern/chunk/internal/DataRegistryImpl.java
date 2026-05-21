@@ -413,11 +413,14 @@ public class DataRegistryImpl {
                 StartupQuery.abort();
             }
 
-            try {
-                ZipperUtil.backupWorld();
-            } catch (IOException e) {
-                StartupQuery.notify("The world backup couldn't be created.\n\n" + e);
-                StartupQuery.abort();
+            String skip = System.getProperty("fml.doNotBackup");
+            if (skip == null || !"true".equals(skip)) {
+                try {
+                    ZipperUtil.backupWorld();
+                } catch (IOException e) {
+                    StartupQuery.notify("The world backup couldn't be created.\n\n" + e);
+                    StartupQuery.abort();
+                }
             }
         }
     }
