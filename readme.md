@@ -11,6 +11,15 @@ loading hooks, and more.
 
 ### Mod logo by Houstonruss
 
+NotEnoughIDs Compatibility Notice
+-----
+
+This mod is NOT compatible with NotEnoughIDs (both the original and the GTNH variant). use [EndlessIDs](https://github.com/GTMEGA/EndlessIDs) instead.
+
+**BACKUP YOUR SAVE FIRST!**
+
+If you only need ID extension on block/item IDs, you can turn off the extensions of other ID types in EndlessIDs to prevent compatibility issues!
+
 Goals
 -----
 
